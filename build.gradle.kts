@@ -1,9 +1,16 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+
 plugins {
     id("java")
+    id("fr.brouillard.oss.gradle.jgitver")
+    id("io.spring.dependency-management")
+    id("org.springframework.boot") apply false
+    id("name.remal.sonarlint") apply false
+    id("com.diffplug.spotless") apply false
+    id("io.freefair.lombok") version "8.14.1"
 }
 
 group = "ru.yanin.practice"
-version = "1.0"
 
 allprojects {
     repositories {
@@ -13,14 +20,32 @@ allprojects {
 
 subprojects {
     apply(plugin = "java-library")
+    apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "io.freefair.lombok")
+    apply(plugin = "org.springframework.boot")
 
     tasks.test {
         useJUnitPlatform()
+        systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+        systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
+    }
+
+
+    dependencyManagement {
+        imports {
+            mavenBom(BOM_COORDINATES)
+        }
+    }
+
+    dependencies {
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("org.instancio:instancio-junit:${property("instancioVersion")}")
+        implementation("org.springframework.boot:spring-boot-starter-actuator")
     }
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(25))
+            languageVersion = JavaLanguageVersion.of(25)
         }
     }
 
