@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: UserService
+  datasource:
+    url: jdbc:postgresql://localhost:5436/main_db
+    username: postgres
+    password: 3030
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    locations: classpath:db/migration
+    encoding: UTF-8
+    validate-on-migrate: false
+    baseline-version: 1
+    baseline-on-migrate: true
+
+
+jwt:
+  cookie-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
+
+
+
+logging:
+  file:
+    path: ./logs/userService
+    name: ${logging.file.path}/userService.log
+  level:
+    root: info
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 10
+      total-size-cap: 5GB
+      file-name-pattern: ${logging.file.path}/archived/userService.%d{yyyy-MM-dd}.%i.log
+  pattern:
+    console: '%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %clr(%-5level) %logger{36} - %msg%n'
+    file: '%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n'

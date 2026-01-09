@@ -4,7 +4,7 @@ plugins {
     id("java")
     id("fr.brouillard.oss.gradle.jgitver")
     id("io.spring.dependency-management")
-    id("org.springframework.boot") apply false
+    id("org.springframework.boot")
     id("name.remal.sonarlint") apply false
     id("com.diffplug.spotless") apply false
     id("io.freefair.lombok") version "8.14.1"
@@ -40,7 +40,10 @@ subprojects {
     dependencies {
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("org.instancio:instancio-junit:${property("instancioVersion")}")
+
         implementation("org.springframework.boot:spring-boot-starter-actuator")
+        implementation("org.mapstruct:mapstruct:${property("mapstructVersion")}")
+        annotationProcessor("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
     }
 
     java {
@@ -55,5 +58,9 @@ subprojects {
 
     tasks.withType<Test> {
         systemProperty("file.encoding", "UTF-8")
+    }
+
+    tasks.register("prepareKotlinBuildScriptModel") {
+
     }
 }
