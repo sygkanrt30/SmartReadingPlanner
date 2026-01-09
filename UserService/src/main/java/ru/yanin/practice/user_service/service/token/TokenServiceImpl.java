@@ -1,7 +1,7 @@
 package ru.yanin.practice.user_service.service.token;
 
 import lombok.Setter;
-import ru.yanin.practice.user_service.model.Token;
+import ru.yanin.practice.token.Token;
 import ru.yanin.practice.user_service.model.dto.response.UserInfoForTokenDto;
 import ru.yanin.practice.user_service.service.token.util.TokenCookieFactory;
 

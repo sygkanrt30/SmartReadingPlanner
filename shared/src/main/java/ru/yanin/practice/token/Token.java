@@ -1,6 +1,4 @@
-package ru.yanin.practice.user_service.model;
-
-import ru.yanin.practice.user_service.model.entity.Role;
+package ru.yanin.practice.token;
 
 import java.time.Instant;
 import java.util.UUID;

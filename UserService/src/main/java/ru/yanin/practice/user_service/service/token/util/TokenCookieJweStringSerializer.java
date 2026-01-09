@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.yanin.practice.user_service.model.Token;
+import ru.yanin.practice.token.Token;
 
 import java.util.Date;
 import java.util.function.Function;

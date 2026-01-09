@@ -20,4 +20,4 @@ pluginManagement {
 
 include("UserService")
 include("api-gateway")
-
+include("shared")
