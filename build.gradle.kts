@@ -43,7 +43,6 @@ subprojects {
         testImplementation("org.instancio:instancio-junit:${property("instancioVersion")}")
 
         implementation("org.springframework.boot:spring-boot-starter-actuator")
-        implementation(project(":shared"))
         implementation("org.mapstruct:mapstruct:${property("mapstructVersion")}")
         annotationProcessor("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
     }
