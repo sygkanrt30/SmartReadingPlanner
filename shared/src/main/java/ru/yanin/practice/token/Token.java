@@ -1,12 +1,14 @@
 package ru.yanin.practice.token;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public record Token(
         UUID id,
-        String subject,
-        Role role,
+        String username,
+        Long userId,
+        List<String> roles,
         Instant createdAt,
         Instant expiresAt) {
 }

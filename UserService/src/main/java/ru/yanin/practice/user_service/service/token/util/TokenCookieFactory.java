@@ -6,6 +6,7 @@ import ru.yanin.practice.user_service.model.dto.response.UserInfoForTokenDto;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -20,7 +21,8 @@ public class TokenCookieFactory implements Function<UserInfoForTokenDto, Token> 
         return new Token(
                 UUID.randomUUID(),
                 userInfo.username(),
-                userInfo.role(),
+                userInfo.id(),
+                List.of(userInfo.role().name()),
                 now,
                 now.plus(tokenTtl)
         );

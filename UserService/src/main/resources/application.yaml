@@ -18,6 +18,13 @@ jwt:
   cookie-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
 
 
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
 
 logging:
   file:

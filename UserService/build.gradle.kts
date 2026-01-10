@@ -10,6 +10,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.nimbusds:nimbus-jose-jwt:${property("nimbusVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation(project(":shared"))
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
     runtimeOnly("org.flywaydb:flyway-database-postgresql")

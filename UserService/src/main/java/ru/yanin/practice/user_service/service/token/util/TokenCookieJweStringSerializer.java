@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.yanin.practice.token.ClaimName;
 import ru.yanin.practice.token.Token;
 
 import java.util.Date;
@@ -29,10 +30,11 @@ public class TokenCookieJweStringSerializer implements Function<Token, String> {
                 .build();
         var claimsSet = new JWTClaimsSet.Builder()
                 .jwtID(token.id().toString())
-                .subject(token.subject())
+                .subject(token.username())
                 .issueTime(Date.from(token.createdAt()))
                 .expirationTime(Date.from(token.expiresAt()))
-                .claim(ClaimName.ROLE.name(), token.role())
+                .claim(ClaimName.ROLE.name(), token.roles())
+                .claim(ClaimName.USER_ID.name(), token.userId())
                 .build();
         return try2GetEncryptedJWT(jwsHeader, claimsSet);
     }

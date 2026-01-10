@@ -1,12 +1,13 @@
-package ru.yanin.practice.user_service.service.token.util;
+package ru.yanin.practice.token;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-enum ClaimName {
-    ROLE("role");
+public enum ClaimName {
+    ROLE("role"),
+    USER_ID("user_id");
 
     private final String name;
 }
