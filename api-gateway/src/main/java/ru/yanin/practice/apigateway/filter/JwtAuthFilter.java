@@ -20,6 +20,8 @@ import ru.yanin.practice.apigateway.token.TokenService;
 import ru.yanin.practice.token.Token;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ru.yanin.practice.apigateway.filter.HeaderName.*;
 
@@ -34,6 +36,12 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
+
+            String path = request.getURI().getPath();
+
+            if (isExcludedPath(path, config)) {
+                return chain.filter(exchange);
+            }
 
             String token = jwtService.extractToken(request);
             if (config.isRequired()) {
@@ -57,6 +65,30 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
                 return unauthorized(exchange, "Invalid token");
             }
         };
+    }
+
+    private boolean isExcludedPath(String path, Config config) {
+        if (config.getExcludePaths() == null || config.getExcludePaths().isEmpty()) {
+            return false;
+        }
+
+        return config.getExcludePaths().stream()
+                .anyMatch(pattern -> {
+                    try {
+                        if (pattern.equals(path)) {
+                            return true;
+                        }
+                        if (pattern.contains("*")) {
+                            String regex = pattern
+                                    .replace(".", "\\.")
+                                    .replace("*", ".*");
+                            return path.matches(regex);
+                        }
+                        return false;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                });
     }
 
     private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {
@@ -95,5 +127,6 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Config {
         boolean required = true;
+        List<String> excludePaths = new ArrayList<>();
     }
 }
