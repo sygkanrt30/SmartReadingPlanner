@@ -3,7 +3,7 @@ spring:
     name: api-gateway
   data:
     redis:
-      host: ${REDIS_HOST:redis}
+      host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:redispass123}
       timeout: 10s
@@ -27,15 +27,28 @@ spring:
         excluded-paths:
           - "^/actuator/health$"
           - "^/actuator/info$"
-          - "^/api/v1/auth/reg"
+          - "^/api/v1/users/auth/reg$"
       server:
         webflux:
+          default-filters:
+            - name: JwtAuthFilter
+              args:
+                requireAuth: true
+                excludePaths:
+                  - /api/v1/users/auth/reg
+                  - /actuator/**
           routes:
+            - id: user-service-reg
+              uri: lb://UserService
+              predicates:
+                - Path=/api/v1/users/auth/reg
+              filters:
+                - GlobalSetCookieAfterRegistrationFilter
+
             - id: user-service
               uri: lb://UserService
               predicates:
-                - Path=/api/v1/auth/reg
-
+                - Path=/api/v1/users/**
 server:
   port: 8086
   forward-headers-strategy: framework

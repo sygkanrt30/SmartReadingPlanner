@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-enum CookieName {
+public enum CookieName {
     HOST_AUTH_TOKEN("__Host-auth-token");
 
     private final String name;

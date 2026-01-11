@@ -12,6 +12,6 @@ import ru.yanin.practice.user_service.model.dto.request.UserCoreForReg;
 public interface UserCoreMapper {
 
     @Mapping(target = "firstName", expression = "java(userCoreForReg.firstName().toLowerCase())")
-    @Mapping(target = "secondName", expression = "java(userCoreForReg.secondName().toLowerCase())")
+    @Mapping(target = "lastName", expression = "java(userCoreForReg.lastName().toLowerCase())")
     UserCore toUserCore(UserCoreForReg userCoreForReg);
 }

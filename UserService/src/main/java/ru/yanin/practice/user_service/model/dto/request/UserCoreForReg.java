@@ -15,7 +15,7 @@ public record UserCoreForReg(
         String firstName,
 
         @NotBlank
-        String secondName,
+        String lastName,
 
         LocalDate birthDate,
 

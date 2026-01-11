@@ -7,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
 
-@Table("user_core")
+@Table("users_core")
 public record UserCore(
         @Id
         Long id,
@@ -15,8 +15,8 @@ public record UserCore(
         @Column("first_name")
         String firstName,
 
-        @Column("second_name")
-        String secondName,
+        @Column("last_name")
+        String lastName,
 
         @Column("birth_date")
         LocalDate birthDate

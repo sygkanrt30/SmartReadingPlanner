@@ -11,5 +11,6 @@ import ru.yanin.practice.user_service.model.dto.response.UserInfoForTokenDto;
 public interface UserInfoMapper {
 
     @Mapping(target = "role", constant = "USER")
+    @Mapping(target = "id", source = "savedUserId")
     UserInfoForTokenDto toUserInfoDto(String username, Long savedUserId);
 }

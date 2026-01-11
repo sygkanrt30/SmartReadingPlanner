@@ -12,6 +12,6 @@ import java.util.UUID;
 public interface UserCredentialsRepository extends CrudRepository<UserCredentials, Long> {
 
     @Modifying
-    @Query("UPDATE UserCredentials uc SET uc.current_token_id = :tokenId WHERE uc.user_id = :userId")
+    @Query("UPDATE users_credentials SET current_token_id = :tokenId WHERE user_id = :userId")
     void addTokenIdToUser(UUID tokenId, Long userId);
 }

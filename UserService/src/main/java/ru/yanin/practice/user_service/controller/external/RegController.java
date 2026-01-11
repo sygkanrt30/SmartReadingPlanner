@@ -15,7 +15,7 @@ import ru.yanin.practice.user_service.service.highlevel.registration.Registratio
 
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/users/auth")
 @RequiredArgsConstructor
 @Validated
 @Slf4j

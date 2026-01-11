@@ -1,7 +1,7 @@
 CREATE TABLE users_core (
     id BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30),
+    last_name VARCHAR(30) NOT NULL,
     birth_date DATE NOT NULL,
 
     CONSTRAINT chk_birth_date CHECK (birth_date <= CURRENT_DATE)
@@ -27,7 +27,7 @@ CREATE TABLE reading_profiles (
     daily_goal INTEGER DEFAULT 30,
     timezone VARCHAR(40) DEFAULT 'Europe/Moscow',
     preferred_genres TEXT[] DEFAULT '{}',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_reading_profiles_user
         FOREIGN KEY (user_id)
@@ -64,7 +64,7 @@ CREATE TABLE user_settings (
     reading_reminders BOOLEAN DEFAULT TRUE,
     privacy_level VARCHAR(20) DEFAULT 'PRIVATE',
     language VARCHAR(10) DEFAULT 'en',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_user_settings_user
         FOREIGN KEY (user_id)
