@@ -8,14 +8,14 @@ CREATE TABLE users_core (
 );
 
 CREATE TABLE users_credentials (
-    user_id BIGINT PRIMARY KEY REFERENCES users_core(id) ON DELETE CASCADE,
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES users_core(id) ON DELETE CASCADE,
     username VARCHAR(30) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
+    password VARCHAR(150) NOT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
     role VARCHAR(10) NOT NULL DEFAULT 'USER',
     email_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    current_token_id UUID UNIQUE,
 
     CONSTRAINT chk_username_length CHECK (LENGTH(username) >= 3)
 );

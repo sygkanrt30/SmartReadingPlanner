@@ -6,6 +6,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.yanin.practice.exception.PropertyName;
 
 import java.time.Instant;
 

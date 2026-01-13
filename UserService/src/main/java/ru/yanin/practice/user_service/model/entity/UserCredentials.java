@@ -17,6 +17,8 @@ import java.util.UUID;
 @Table("users_credentials")
 public record UserCredentials(
         @Id
+        Long id,
+
         @Column("user_id")
         Long userId,
 
@@ -33,10 +35,8 @@ public record UserCredentials(
 
         @CreatedDate
         @Column("created_at")
-        Instant createdAt,
+        Instant createdAt
 
-        @Column("current_token_id")
-        UUID currentTokenId
 ) implements UserDetails {
 
     @Override

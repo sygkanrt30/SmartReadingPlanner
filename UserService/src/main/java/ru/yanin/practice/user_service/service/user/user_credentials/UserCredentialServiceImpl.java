@@ -9,8 +9,6 @@ import ru.yanin.practice.user_service.model.dto.request.UserCoreForReg;
 import ru.yanin.practice.user_service.model.mapper.UserCredentialsMapper;
 import ru.yanin.practice.user_service.repository.UserCredentialsRepository;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -28,10 +26,5 @@ public class UserCredentialServiceImpl implements UserCredentialService {
         } catch (Exception e) {
             throw new SaveEntityException(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public void addTokenIdToUser(UUID tokenId, Long userId) {
-        userCredentialsRepository.addTokenIdToUser(tokenId, userId);
     }
 }

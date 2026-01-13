@@ -7,6 +7,4 @@ import java.util.UUID;
 public interface UserCredentialService {
 
     void save(UserCoreForReg userCoreForReg, Long savedUserId);
-
-    void addTokenIdToUser(UUID tokenId, Long userId);
 }

@@ -1,4 +1,4 @@
-package ru.yanin.practice.user_service.exception.handler;
+package ru.yanin.practice.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @RequiredArgsConstructor
 @Getter
 @Accessors(fluent = true)
-enum PropertyName {
+public enum PropertyName {
     ERROR_CODE("errorCode"),
     TIMESTAMP("timestamp");
 
