@@ -7,7 +7,7 @@ import ru.yanin.practice.token.Token;
 
 import java.util.Objects;
 
-import static ru.yanin.practice.apigateway.token.CookieName.HOST_AUTH_TOKEN;
+import static ru.yanin.practice.cookie.CookieName.HOST_AUTH_TOKEN;
 
 @Service
 @RequiredArgsConstructor

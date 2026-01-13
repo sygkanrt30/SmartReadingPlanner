@@ -27,7 +27,7 @@ spring:
         excluded-paths:
           - "^/actuator/health$"
           - "^/actuator/info$"
-          - "^/api/v1/users/auth/reg$"
+        auth-path: "^/api/v1/users/auth/$"
       server:
         webflux:
           default-filters:
@@ -35,16 +35,9 @@ spring:
               args:
                 requireAuth: true
                 excludePaths:
-                  - /api/v1/users/auth/reg
+                  - /api/v1/users/auth/**
                   - /actuator/**
           routes:
-            - id: user-service-reg
-              uri: lb://UserService
-              predicates:
-                - Path=/api/v1/users/auth/reg
-              filters:
-                - GlobalSetCookieAfterRegistrationFilter
-
             - id: user-service
               uri: lb://UserService
               predicates:

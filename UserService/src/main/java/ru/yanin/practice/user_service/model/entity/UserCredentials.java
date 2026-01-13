@@ -12,7 +12,6 @@ import ru.yanin.practice.token.Role;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 @Table("users_credentials")
 public record UserCredentials(

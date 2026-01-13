@@ -4,7 +4,6 @@ import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import ru.yanin.practice.token.Token;
-import ru.yanin.practice.user_service.repository.UserCredentialsRepository;
 
 import java.time.Duration;
 import java.time.Instant;

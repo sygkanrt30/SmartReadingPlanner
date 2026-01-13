@@ -10,6 +10,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -34,16 +35,24 @@ public class GlobalRedisRateLimiterFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        if (rateLimitUtil.isExcluded(exchange)) {
+        ServerHttpRequest request = exchange.getRequest();
+
+        if (rateLimitUtil.isExcluded(request)) {
             return chain.filter(exchange);
         }
 
-        String key = rateLimitUtil.buildRateLimitKey(exchange);
-        boolean isAllowed = rateLimitUtil.checkRateLimit(key, exchange.getRequest());
-        if (!isAllowed) {
-            return buildRateLimitResponse(exchange);
-        }
-        return chain.filter(exchange);
+        return rateLimitUtil.checkRateLimit(request)
+                .flatMap(isAllowed -> {
+                    if (isAllowed) {
+                        return chain.filter(exchange);
+                    }
+                    return buildRateLimitResponse(exchange);
+
+                })
+                .onErrorResume(e -> {
+                    log.error("Rate limit check failed", e);
+                    return chain.filter(exchange);
+                });
     }
 
     private Mono<Void> buildRateLimitResponse(ServerWebExchange exchange) {
@@ -59,10 +68,9 @@ public class GlobalRedisRateLimiterFilter implements GlobalFilter, Ordered {
 
         try {
             byte[] bytes = new ObjectMapper().writeValueAsBytes(responseBody);
-            DataBuffer buffer = exchange.getResponse()
-                    .bufferFactory()
+            DataBuffer buffer = response.bufferFactory()
                     .wrap(bytes);
-            return exchange.getResponse().writeWith(Mono.just(buffer));
+            return response.writeWith(Mono.just(buffer));
         } catch (JsonProcessingException e) {
             return Mono.error(e);
         }

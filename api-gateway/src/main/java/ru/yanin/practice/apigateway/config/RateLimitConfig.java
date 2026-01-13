@@ -14,7 +14,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "spring.cloud.gateway.rate-limiter")
 @Data
 @Validated
-public class RateLimitConfig{
+public class RateLimitConfig {
 
     /**
      * Включен ли rate limiter
@@ -55,7 +55,7 @@ public class RateLimitConfig{
      * Ключ - regex pattern пути
      * Значение - максимальное количество запросов
      */
-    private Map<String, Integer> customLimits = new HashMap<>();
+    private Map<String, Long> customLimits = new HashMap<>();
 
     /**
      * Кастомные окна для определенных путей
@@ -71,7 +71,8 @@ public class RateLimitConfig{
             "^/actuator/health$"
     );
 
-    public RateLimitConfig() {
+    private String authPath = "/api/v1/users/auth/";
 
+    public RateLimitConfig() {
     }
 }
