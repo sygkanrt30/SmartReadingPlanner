@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 import ru.yanin.practice.apigateway.config.RateLimitConfig;
 import ru.yanin.practice.apigateway.exception.ExtractTokenException;
 import ru.yanin.practice.apigateway.token.TokenService;
+import ru.yanin.practice.token.Token;
 
 import java.time.Duration;
 import java.util.Map;
@@ -32,6 +33,12 @@ public class RateLimitUtil {
                 .anyMatch(path::matches);
     }
 
+
+    /**
+     * Проверка превышения лимита запросов
+     * true - запрос не превышает лимит
+     * false - запрос превышает лимит
+     */
     public Mono<Boolean> checkRateLimit(ServerHttpRequest request) {
         long windowMillis = getWindowMillis(request);
         long windowsIndex = System.currentTimeMillis() / windowMillis;
@@ -77,9 +84,7 @@ public class RateLimitUtil {
             }
 
             if (config.isPerUser()) {
-                if (isAuthRequest) {
-                    key.append(":ip:").append(getClientIp(request));
-                } else {
+                if (!isAuthRequest) {
                     return extractUserIdFromToken(request)
                             .map(userId -> key.append(":user:").append(userId).toString())
                             .onErrorResume(e -> {
@@ -87,6 +92,7 @@ public class RateLimitUtil {
                                 return Mono.just(key.append(":ip:").append(getClientIp(request)).toString());
                             });
                 }
+                key.append(":ip:").append(getClientIp(request));
             }
             return Mono.just(key.toString());
         });
@@ -102,7 +108,7 @@ public class RateLimitUtil {
     private Mono<String> extractUserIdFromToken(ServerHttpRequest request) {
         return Mono.fromCallable(() -> {
             String stringToken = tokenService.extractToken(request);
-            var token = tokenService.validateToken(stringToken);
+            Token token = tokenService.validateToken(stringToken);
             return token.userId().toString();
         }).onErrorResume(e -> Mono.error(new ExtractTokenException("Failed to extract user from token", e)));
     }

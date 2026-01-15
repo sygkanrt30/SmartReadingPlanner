@@ -1,6 +1,7 @@
 package ru.yanin.practice.apigateway.token;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import ru.yanin.practice.token.Token;
@@ -22,8 +23,10 @@ public class JwtTokenService implements TokenService {
 
     @Override
     public String extractToken(ServerHttpRequest request) {
-        return Objects.requireNonNull(request.getCookies()
-                .getFirst(HOST_AUTH_TOKEN.getName()))
+        String cookieName = HOST_AUTH_TOKEN.getName();
+        HttpCookie cookie = request.getCookies().getFirst(cookieName);
+        return Objects.requireNonNull(cookie,
+                        String.format("Cookie with name %s not found in request's cookies", cookieName))
                 .getValue();
     }
 }

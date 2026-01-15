@@ -43,20 +43,20 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
                 return chain.filter(exchange);
             }
 
-            String token = jwtService.extractToken(request);
+            String stringToken = jwtService.extractToken(request);
             if (config.isRequired()) {
-                return unauthorized(exchange, "Missing token");
+                return unauthorized(exchange, "Missing stringToken");
             }
 
             try {
-                Token tokenDto = jwtService.validateToken(token);
+                Token token = jwtService.validateToken(stringToken);
 
                 ServerHttpRequest modifiedRequest = request.mutate()
-                        .header(USER_ID.value(), tokenDto.userId().toString())
-                        .header(USER_ROLES.value(), tokenDto.roles().toString())
-                        .header(USER_USERNAME.value(), tokenDto.username())
+                        .header(USER_ID.value(), token.userId().toString())
+                        .header(USER_ROLES.value(), token.roles().toString())
+                        .header(USER_USERNAME.value(), token.username())
                         .build();
-                logTokenIfLogLevelIsDebug(tokenDto, request);
+                logTokenIfLogLevelIsDebug(token, request);
                 return chain.filter(
                         exchange.mutate().request(modifiedRequest).build()
                 );
@@ -106,9 +106,7 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
 
     private void logTokenIfLogLevelIsDebug(Token tokenDto, ServerHttpRequest request) {
         if (log.isDebugEnabled()) {
-            log.debug("User {} accessed {}",
-                    tokenDto.username(),
-                    request.getURI());
+            log.debug("User {} accessed {}", tokenDto.username(), request.getURI());
         }
     }
 

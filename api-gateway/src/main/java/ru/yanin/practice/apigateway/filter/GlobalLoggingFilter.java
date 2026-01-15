@@ -25,7 +25,7 @@ public class GlobalLoggingFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        log.debug("Incoming request: {} {} from {}",
+        log.trace("Incoming request: {} {} from {}",
                 request.getMethod(),
                 request.getURI(),
                 request.getRemoteAddress());
@@ -38,7 +38,7 @@ public class GlobalLoggingFilter implements GlobalFilter, Ordered {
                 .build();
 
         return chain.filter(exchange.mutate().request(modifiedRequest).build())
-                .doOnSuccess(v -> logResponseTime(exchange))
+                .doOnSuccess(_ -> logResponseTime(exchange))
                 .doOnError(throwable ->
                         log.error("Error processing request: {}", throwable.getMessage()));
 

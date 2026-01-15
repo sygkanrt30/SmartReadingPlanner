@@ -1,7 +1,9 @@
 package ru.yanin.practice.apigateway.config;
 
 import jakarta.validation.constraints.Min;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +14,9 @@ import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.cloud.gateway.rate-limiter")
-@Data
+@Getter
+@Setter
+@Accessors(chain = true)
 @Validated
 public class RateLimitConfig {
 
@@ -45,7 +49,7 @@ public class RateLimitConfig {
 
 
     @Min(1)
-    private int defaultMaxRequests = 100;
+    private long defaultMaxRequests = 100;
 
     @Min(1000)
     private long defaultWindowMillis = 60_000;

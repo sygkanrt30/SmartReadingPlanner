@@ -27,7 +27,7 @@ spring:
         excluded-paths:
           - "^/actuator/health$"
           - "^/actuator/info$"
-        auth-path: "^/api/v1/users/auth/$"
+        auth-path: "/api/v1/users/auth/"
       server:
         webflux:
           default-filters:

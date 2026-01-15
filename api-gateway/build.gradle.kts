@@ -7,7 +7,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(project(":shared"))
     implementation("com.nimbusds:nimbus-jose-jwt:${property("nimbusVersion")}")
+
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.projectreactor:reactor-test")
 }

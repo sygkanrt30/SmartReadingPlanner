@@ -7,14 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.yanin.practice.user_service.exception.RegistrationException;
 import ru.yanin.practice.user_service.model.entity.UserCredentials;
 import ru.yanin.practice.user_service.repository.UserCredentialsRepository;
 import ru.yanin.practice.user_service.security.TokenCookieSessionAuthenticationStrategy;
 
 @RequiredArgsConstructor
-@Component
+@Service
 @Slf4j
 public class Authenticator {
 

@@ -11,6 +11,6 @@ import java.util.List;
 public class ListToArrayConverter implements Converter<List<String>, String[]> {
     @Override
     public String[] convert(List<String> source) {
-        return source != null ? source.toArray(new String[0]) : new String[0];
+        return source.toArray(new String[0]);
     }
 }

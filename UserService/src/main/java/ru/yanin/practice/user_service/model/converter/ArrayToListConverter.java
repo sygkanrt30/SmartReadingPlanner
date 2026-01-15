@@ -20,8 +20,7 @@ public class ArrayToListConverter implements Converter<Array, List<String>> {
     @Override
     public List<String> convert(Array source) {
         try {
-            if (source == null) return new ArrayList<>();
-            String[] array = (String[]) source.getArray();
+            var array = (String[]) source.getArray();
             return array != null ? new ArrayList<>(Arrays.asList(array)) : new ArrayList<>();
         } catch (SQLException e) {
             throw new DataConvertFailException("Failed to convert array", e);

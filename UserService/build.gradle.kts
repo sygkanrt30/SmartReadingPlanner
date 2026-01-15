@@ -16,5 +16,6 @@ dependencies {
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
