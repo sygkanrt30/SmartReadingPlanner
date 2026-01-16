@@ -27,6 +27,8 @@ import static ru.yanin.practice.apigateway.filter.HeaderName.*;
 @Slf4j
 public class GlobalRedisRateLimiterFilter implements GlobalFilter, Ordered {
 
+    private static final int MIDDLE_PRECEDENCE = 0;
+
     private final RateLimitUtil rateLimitUtil;
 
     @Override
@@ -85,6 +87,6 @@ public class GlobalRedisRateLimiterFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
+        return MIDDLE_PRECEDENCE;
     }
 }

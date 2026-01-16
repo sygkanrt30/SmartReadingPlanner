@@ -33,7 +33,6 @@ spring:
           default-filters:
             - name: JwtAuthFilter
               args:
-                requireAuth: true
                 excludePaths:
                   - /api/v1/users/auth/**
                   - /actuator/**

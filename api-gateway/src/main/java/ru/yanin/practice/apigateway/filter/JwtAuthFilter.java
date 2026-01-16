@@ -1,13 +1,12 @@
 package ru.yanin.practice.apigateway.filter;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import ru.yanin.practice.apigateway.exception.InvalidTokenException;
 import ru.yanin.practice.apigateway.token.TokenService;
 import ru.yanin.practice.token.Token;
 
@@ -28,7 +28,7 @@ import static ru.yanin.practice.apigateway.filter.HeaderName.*;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config> {
+public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>, Ordered {
 
     private final TokenService jwtService;
 
@@ -36,22 +36,19 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-
             String path = request.getURI().getPath();
 
             if (isExcludedPath(path, config)) {
                 return chain.filter(exchange);
             }
-
-            String stringToken = jwtService.extractToken(request);
-            if (config.isRequired()) {
-                return unauthorized(exchange, "Missing stringToken");
-            }
-
             try {
-                Token token = jwtService.validateToken(stringToken);
+                Token token = jwtService.extractToken(request);
 
-                ServerHttpRequest modifiedRequest = request.mutate()
+                if (!jwtService.isValidToken(token)) {
+                    throw new InvalidTokenException("Token is expired");
+                }
+
+                var modifiedRequest = request.mutate()
                         .header(USER_ID.value(), token.userId().toString())
                         .header(USER_ROLES.value(), token.roles().toString())
                         .header(USER_USERNAME.value(), token.username())
@@ -60,6 +57,8 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
                 return chain.filter(
                         exchange.mutate().request(modifiedRequest).build()
                 );
+            } catch (NullPointerException e) {
+                return unauthorized(exchange, "Missing token");
             } catch (Exception e) {
                 log.warn("Invalid token: {}", e.getMessage(), e);
                 return unauthorized(exchange, "Invalid token");
@@ -120,11 +119,14 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
         return new Config();
     }
 
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     @Setter
     @Getter
-    @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Config {
-        boolean required = true;
-        List<String> excludePaths = new ArrayList<>();
+        private List<String> excludePaths = new ArrayList<>();
     }
 }

@@ -28,13 +28,12 @@ public class UserServiceImpl implements UserService {
         log.debug("User core saved: {}", savedUserId);
 
         userCredentialService.save(user, savedUserId);
-        log.trace("User credentials saved: {}", savedUserId);
+        log.debug("User credentials saved: {}", savedUserId);
 
         userSettingsService.save(user, savedUserId);
-        log.trace("User settings saved: {}", savedUserId);
+        log.debug("User settings saved: {}", savedUserId);
 
         readingProfileService.save(user, savedUserId);
-        log.trace("Reading profile saved: {}", savedUserId);
+        log.debug("Reading profile saved: {}", savedUserId);
     }
-
 }

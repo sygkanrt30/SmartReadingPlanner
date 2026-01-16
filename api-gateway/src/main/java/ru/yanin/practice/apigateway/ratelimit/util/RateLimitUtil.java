@@ -107,10 +107,9 @@ public class RateLimitUtil {
 
     private Mono<String> extractUserIdFromToken(ServerHttpRequest request) {
         return Mono.fromCallable(() -> {
-            String stringToken = tokenService.extractToken(request);
-            Token token = tokenService.validateToken(stringToken);
+            Token token = tokenService.extractToken(request);
             return token.userId().toString();
-        }).onErrorResume(e -> Mono.error(new ExtractTokenException("Failed to extract user from token", e)));
+        }).onErrorResume(e -> Mono.error(new ExtractTokenException("Failed to extract user_id from token", e)));
     }
 
     private boolean isAllowed(ServerHttpRequest request, Long countHits) {

@@ -40,8 +40,7 @@ public class Authenticator {
             );
             tokenCookieSessionAuthenticationStrategy.onAuthentication(authentication, request, response);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new RegistrationException("Authentication failed after registration", e);
+            throw new RegistrationException("Authentication failed after registration: " + e.getMessage(), e);
         }
         log.debug("successfully authenticated user with username ({}) after registration", username);
     }

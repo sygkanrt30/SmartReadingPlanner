@@ -6,6 +6,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import ru.yanin.practice.token.Token;
 
+import java.time.Instant;
 import java.util.Objects;
 
 import static ru.yanin.practice.cookie.CookieName.HOST_AUTH_TOKEN;
@@ -17,16 +18,17 @@ public class JwtTokenService implements TokenService {
     private final TokenCookieJweStringDeserializer tokenCookieJweStringDeserializer;
 
     @Override
-    public Token validateToken(String token) {
-        return tokenCookieJweStringDeserializer.apply(token);
+    public boolean isValidToken(Token token) {
+        return token.expiresAt().isAfter(Instant.now());
     }
 
     @Override
-    public String extractToken(ServerHttpRequest request) {
+    public Token extractToken(ServerHttpRequest request) {
         String cookieName = HOST_AUTH_TOKEN.getName();
         HttpCookie cookie = request.getCookies().getFirst(cookieName);
-        return Objects.requireNonNull(cookie,
+        String stringToken = Objects.requireNonNull(cookie,
                         String.format("Cookie with name %s not found in request's cookies", cookieName))
                 .getValue();
+        return tokenCookieJweStringDeserializer.apply(stringToken);
     }
 }

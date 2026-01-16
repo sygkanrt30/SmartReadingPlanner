@@ -46,6 +46,7 @@ class AuthController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestBody @Valid UserCredentialsForAuth userCredentials) {
+
         log.info("Login attempt for user: {}", userCredentials.username());
         authenticator.authenticateAndSetCookie(request, response, userCredentials.username(),
                 userCredentials.password().getBytes()

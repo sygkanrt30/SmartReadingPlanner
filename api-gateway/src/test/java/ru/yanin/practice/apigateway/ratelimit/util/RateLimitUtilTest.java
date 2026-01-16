@@ -1,7 +1,10 @@
 package ru.yanin.practice.apigateway.ratelimit.util;
 
 import org.instancio.Instancio;
-import module org.junit.jupiter.api;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,8 +139,6 @@ public class RateLimitUtilTest {
                 .set(field(Token::username), username)
                 .create();
         when(tokenService.extractToken(any()))
-                .thenReturn("valid-token");
-        when(tokenService.validateToken("valid-token"))
                 .thenReturn(token);
 
         //Assert & Act
@@ -162,8 +163,6 @@ public class RateLimitUtilTest {
                 .set(field(Token::username), username)
                 .create();
         when(tokenService.extractToken(any()))
-                .thenReturn("valid-token");
-        when(tokenService.validateToken("valid-token"))
                 .thenReturn(token);
 
         // Act

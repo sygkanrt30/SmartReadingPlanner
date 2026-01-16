@@ -5,7 +5,7 @@ import ru.yanin.practice.token.Token;
 
 public interface TokenService {
 
-    Token validateToken(String token);
+    boolean isValidToken(Token token);
 
-    String extractToken(ServerHttpRequest request);
+    Token extractToken(ServerHttpRequest request);
 }

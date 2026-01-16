@@ -19,7 +19,6 @@ public class GlobalLoggingFilter implements GlobalFilter, Ordered {
 
 
     private static final String START_TIME_ATTR_NAME = "startTime";
-    private static final int PRECEDENCE = 0;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -56,6 +55,6 @@ public class GlobalLoggingFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return PRECEDENCE;
+        return Ordered.LOWEST_PRECEDENCE;
     }
 }
