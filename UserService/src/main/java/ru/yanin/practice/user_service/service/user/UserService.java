@@ -6,4 +6,7 @@ public interface UserService {
 
     void save(UserCoreForReg user);
 
+    void changeEmailVerificationStatus(String email);
+
+    boolean checkUserIdAndEmailBelongToSameUser(String email, Long userId);
 }

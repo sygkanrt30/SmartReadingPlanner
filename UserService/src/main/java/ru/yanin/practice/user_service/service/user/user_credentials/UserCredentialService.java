@@ -5,4 +5,8 @@ import ru.yanin.practice.user_service.model.dto.request.UserCoreForReg;
 public interface UserCredentialService {
 
     void save(UserCoreForReg userCoreForReg, Long savedUserId);
+
+    void changeEmailVerificationStatus(String email);
+
+    boolean checkUserIdAndEmailBelongToSameUser(String email, Long userId);
 }

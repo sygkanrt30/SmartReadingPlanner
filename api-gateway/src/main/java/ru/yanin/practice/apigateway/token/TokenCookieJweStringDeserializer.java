@@ -3,6 +3,7 @@ package ru.yanin.practice.apigateway.token;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jwt.EncryptedJWT;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.yanin.practice.token.ClaimName;
@@ -19,6 +20,7 @@ public class TokenCookieJweStringDeserializer implements Function<String, Token>
     private final JWEDecrypter jweDecrypter;
 
     @Override
+    @Nullable
     public Token apply(String string) {
         try {
             var encryptedJWT = EncryptedJWT.parse(string);

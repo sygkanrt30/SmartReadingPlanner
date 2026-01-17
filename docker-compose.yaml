@@ -13,6 +13,8 @@ services:
       POSTGRES_DB: main_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - general-network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -39,6 +41,47 @@ services:
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-redispass123}
 
+  redis_for_user_service:
+    image: redis:7.2-alpine
+    container_name: redis_for_user_service
+    restart: unless-stopped
+    ports:
+      - "6377:6377"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD:-redispass123}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redispass123}", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - general-network
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redispass123}
+
+  rabbitmq:
+    image: rabbitmq:4.2-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+      - RABBITMQ_DEFAULT_VHOST=/
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - general-network
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 networks:
   general-network:
     driver: bridge
@@ -46,3 +89,4 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  rabbitmq_data:

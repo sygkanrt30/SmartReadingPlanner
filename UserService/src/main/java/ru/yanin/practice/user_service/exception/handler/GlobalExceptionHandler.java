@@ -1,5 +1,8 @@
 package ru.yanin.practice.user_service.exception.handler;
 
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotAcceptableException;
+import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -14,9 +17,19 @@ import java.time.Instant;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UsernameNotFoundException.class)
+    @ExceptionHandler({UsernameNotFoundException.class, NotFoundException.class})
     public ProblemDetail catchNotFoundException(Exception e) {
         return getAppErrorHandlerResponseDto(e, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotAcceptableException.class)
+    public ProblemDetail NotAcceptableException(Exception e) {
+        return getAppErrorHandlerResponseDto(e, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ProblemDetail BadRequestException(Exception e) {
+        return getAppErrorHandlerResponseDto(e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler

@@ -12,6 +12,45 @@ spring:
     validate-on-migrate: false
     baseline-version: 1
     baseline-on-migrate: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6377}
+      password: ${REDIS_PASSWORD:redispass123}
+      timeout: 10s
+      connect-timeout: 10s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+        shutdown-timeout: 100ms
+      storage:
+        email-code:
+          key:
+            expiration.sec: 60
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+    virtual-host: /
+    connection-timeout: 5000
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        multiplier: 2.0
+    queue:
+      name: verification.queue
+      message:
+        ttl: 70000
+      exchange:
+        name: verification.exchange
+      routing:
+        key: verification.routing.key
 
 
 jwt:

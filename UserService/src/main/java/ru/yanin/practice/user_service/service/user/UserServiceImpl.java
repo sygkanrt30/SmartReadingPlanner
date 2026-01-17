@@ -36,4 +36,17 @@ public class UserServiceImpl implements UserService {
         readingProfileService.save(user, savedUserId);
         log.debug("Reading profile saved: {}", savedUserId);
     }
+
+    @Override
+    public void changeEmailVerificationStatus(String email) {
+        userCredentialService.changeEmailVerificationStatus(email);
+        log.debug("Email verification status changed: {}", email);
+    }
+
+    @Override
+    public boolean checkUserIdAndEmailBelongToSameUser(String email, Long userId) {
+        boolean isBelongToSameUser = userCredentialService.checkUserIdAndEmailBelongToSameUser(email, userId);
+        log.trace("User id and email belong to the same user: {}", isBelongToSameUser);
+        return isBelongToSameUser;
+    }
 }
