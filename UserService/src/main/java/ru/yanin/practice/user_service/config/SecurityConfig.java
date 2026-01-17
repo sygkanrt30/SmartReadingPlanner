@@ -12,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import ru.yanin.practice.user_service.security.GatewayHeaderFilter;
 import ru.yanin.practice.user_service.security.TokenCookieSessionAuthenticationStrategy;
 import ru.yanin.practice.user_service.service.token.util.TokenCookieJweStringSerializer;
 
@@ -28,12 +30,18 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .addFilterBefore(gatewayHeaderFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().permitAll()
                 ).sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .sessionAuthenticationStrategy(tokenCookieSessionAuthenticationStrategy))
                 .build();
+    }
+
+    @Bean
+    public GatewayHeaderFilter gatewayHeaderFilter() {
+        return new GatewayHeaderFilter();
     }
 
     @Bean

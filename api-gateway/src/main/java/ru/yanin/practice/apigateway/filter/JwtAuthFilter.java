@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.yanin.practice.apigateway.filter.HeaderName.*;
+import static ru.yanin.practice.header.HeaderName.*;
 
 @Component
 @Slf4j
