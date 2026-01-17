@@ -14,7 +14,7 @@ public record ReadingProfile(
         Long id,
 
         @Column("user_id")
-        long userId,
+        Long userId,
 
         @Column("reading_speed")
         int wordsPerMin,

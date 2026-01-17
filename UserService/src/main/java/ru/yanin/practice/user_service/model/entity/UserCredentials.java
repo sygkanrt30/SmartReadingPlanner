@@ -23,6 +23,9 @@ public record UserCredentials(
 
         String username,
 
+        @Column("telegram_username")
+        String tgUsername,
+
         String password,
 
         String email,

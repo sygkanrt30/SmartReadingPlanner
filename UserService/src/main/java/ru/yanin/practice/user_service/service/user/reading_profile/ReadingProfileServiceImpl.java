@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yanin.practice.user_service.exception.SaveEntityException;
-import ru.yanin.practice.user_service.model.dto.request.UserCoreForReg;
+import ru.yanin.practice.user_service.model.dto.request.auth.UserCoreForReg;
 import ru.yanin.practice.user_service.model.mapper.ReadingProfileMapper;
 import ru.yanin.practice.user_service.repository.ReadingProfileRepository;
 

@@ -18,8 +18,8 @@ public record UserSetting(
         @Column("email_notifications")
         boolean isNeedEmailNotifications,
 
-        @Column("push_notifications")
-        boolean isNeedPushNotifications,
+        @Column("telegram_notifications")
+        boolean isNeedTgNotifications,
 
         @Column("weekly_report")
         boolean isNeedWeeklyReport,
@@ -31,7 +31,7 @@ public record UserSetting(
         UserPrivacyLevel privacyLevel,
 
         @Column("language")
-        String lang,
+        Language lang,
 
         @CreatedDate
         @Column("created_at")

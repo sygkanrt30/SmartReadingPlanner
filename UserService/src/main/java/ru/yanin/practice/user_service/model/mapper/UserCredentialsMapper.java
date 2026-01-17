@@ -7,7 +7,7 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.yanin.practice.user_service.model.entity.UserCredentials;
-import ru.yanin.practice.user_service.model.dto.request.UserCredentialsForReg;
+import ru.yanin.practice.user_service.model.dto.request.auth.UserCredentialsForReg;
 
 @Component
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)

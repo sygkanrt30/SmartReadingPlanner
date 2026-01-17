@@ -1,4 +1,4 @@
-package ru.yanin.practice.user_service.model.dto.request;
+package ru.yanin.practice.user_service.model.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

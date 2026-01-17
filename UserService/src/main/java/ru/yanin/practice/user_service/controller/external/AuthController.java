@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yanin.practice.user_service.model.dto.request.UserCoreForReg;
-import ru.yanin.practice.user_service.model.dto.request.UserCredentialsForAuth;
+import ru.yanin.practice.user_service.model.dto.request.auth.UserCoreForReg;
+import ru.yanin.practice.user_service.model.dto.request.auth.UserCredentialsForAuth;
 import ru.yanin.practice.user_service.service.auth.Authenticator;
-import ru.yanin.practice.user_service.service.user.UserService;
+import ru.yanin.practice.user_service.service.user.UserSavingService;
 
 
 @RestController
@@ -24,7 +24,7 @@ import ru.yanin.practice.user_service.service.user.UserService;
 @Slf4j
 class AuthController {
 
-    private final UserService userService;
+    private final UserSavingService userService;
     private final Authenticator authenticator;
 
     @PostMapping("/reg")

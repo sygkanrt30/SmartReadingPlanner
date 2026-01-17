@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.yanin.practice.user_service.model.dto.rabbit.VerificationEvent;
 import ru.yanin.practice.user_service.service.email.verification.storage.CodeStorageService;
 import ru.yanin.practice.user_service.service.rabbitMq.Producer;
-import ru.yanin.practice.user_service.service.user.UserService;
+import ru.yanin.practice.user_service.service.user.user_credentials.UserCredentialService;
 
 import java.util.Random;
 
@@ -17,7 +17,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailVerificationServiceImpl implements EmailVerificationService {
 
-    private final UserService userService;
+    private final UserCredentialService userService;
     private final CodeStorageService codeStorageService;
     private final Producer<VerificationEvent> producer;
 

@@ -49,7 +49,7 @@ public class RabbitMqConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    @Bean()
+    @Bean
     public RabbitTemplate rabbitTemplateForVerification(ConnectionFactory connectionFactory) {
         var template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(jsonMessageConverter());

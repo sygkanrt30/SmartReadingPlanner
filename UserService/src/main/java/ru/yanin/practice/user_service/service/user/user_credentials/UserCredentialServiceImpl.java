@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yanin.practice.user_service.exception.SaveEntityException;
-import ru.yanin.practice.user_service.model.dto.request.UserCoreForReg;
+import ru.yanin.practice.user_service.model.dto.request.auth.UserCoreForReg;
 import ru.yanin.practice.user_service.model.entity.UserCredentials;
 import ru.yanin.practice.user_service.model.mapper.UserCredentialsMapper;
 import ru.yanin.practice.user_service.repository.UserCredentialsRepository;
@@ -40,6 +40,8 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     public boolean checkUserIdAndEmailBelongToSameUser(String email, Long userId) {
         UserCredentials userCredentials = userCredentialsRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException("User credentials not found by userId: " + userId));
-        return userCredentials.email().equals(email);
+        boolean isBelongToSameUser = userCredentials.email().equals(email);
+        log.trace("User id and email belong to the same user: {}", isBelongToSameUser);
+        return isBelongToSameUser;
     }
 }
