@@ -38,7 +38,7 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
     @Override
     public boolean checkUserIdAndEmailBelongToSameUser(String email, Long userId) {
-        UserCredentials userCredentials = userCredentialsRepository.findById(userId)
+        UserCredentials userCredentials = userCredentialsRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException("User credentials not found by userId: " + userId));
         return userCredentials.email().equals(email);
     }

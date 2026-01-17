@@ -1,4 +1,4 @@
-package ru.yanin.practice.apigateway.filter;
+package ru.yanin.practice.header;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Getter
 @RequiredArgsConstructor
 @Accessors(fluent = true)
-enum HeaderName {
+public enum HeaderName {
 
     REQUEST_ID("X-Gateway-Request-ID"),
     PROCESSED("X-Gateway-Processed"),

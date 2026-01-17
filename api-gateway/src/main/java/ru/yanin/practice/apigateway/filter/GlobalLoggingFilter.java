@@ -11,7 +11,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-import static ru.yanin.practice.apigateway.filter.HeaderName.*;
+import static ru.yanin.practice.header.HeaderName.*;
+
 
 @Component
 @Slf4j
