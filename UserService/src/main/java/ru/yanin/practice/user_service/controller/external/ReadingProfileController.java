@@ -11,6 +11,7 @@ import ru.yanin.practice.user_service.service.user.reading_profile.ReadingProfil
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +20,27 @@ import java.util.Objects;
 class ReadingProfileController {
 
     private final ReadingProfileService readingProfileService;
+
+
+    @PatchMapping("/add-favorite-genre")
+    public ResponseEntity<?> addGenres(
+            @RequestBody Set<String> genres,
+            @RequestHeader("X-User-ID") Long userId
+    ) {
+
+        readingProfileService.addGenres(genres, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/remove-favorite-genre")
+    public ResponseEntity<?> removeGenres(
+            @RequestBody Set<String> genres,
+            @RequestHeader("X-User-ID") Long userId
+    ) {
+
+        readingProfileService.removeGenres(genres, userId);
+        return ResponseEntity.ok().build();
+    }
 
     @PatchMapping("/update-reading-goals")
     public ResponseEntity<?> updateReadingGoals(

@@ -4,13 +4,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 
 @Component
 @WritingConverter
-public class ListToArrayConverter implements Converter<List<String>, String[]> {
+public class ListToArrayConverter implements Converter<Set<String>, String[]> {
     @Override
-    public String[] convert(List<String> source) {
+    public String[] convert(Set<String> source) {
         return source.toArray(new String[0]);
     }
 }

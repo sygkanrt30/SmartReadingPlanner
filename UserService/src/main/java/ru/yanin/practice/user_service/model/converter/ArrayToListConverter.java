@@ -8,20 +8,18 @@ import ru.yanin.practice.user_service.exception.DataConvertFailException;
 
 import java.sql.Array;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Component
 @ReadingConverter
 @Slf4j
-public class ArrayToListConverter implements Converter<Array, List<String>> {
+public class ArrayToListConverter implements Converter<Array, Set<String>> {
 
     @Override
-    public List<String> convert(Array source) {
+    public Set<String> convert(Array source) {
         try {
             var array = (String[]) source.getArray();
-            return array != null ? new ArrayList<>(Arrays.asList(array)) : new ArrayList<>();
+            return array != null ? new HashSet<>(Arrays.asList(array)) : new HashSet<>();
         } catch (SQLException e) {
             throw new DataConvertFailException("Failed to convert array", e);
         }

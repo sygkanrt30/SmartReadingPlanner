@@ -6,7 +6,7 @@ import ru.yanin.practice.user_service.model.entity.Genre;
 import ru.yanin.practice.user_service.model.entity.UserPrivacyLevel;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 public record UserCoreForReg(
         UserCredentialsForReg userCredentials,
@@ -31,7 +31,7 @@ public record UserCoreForReg(
         int bookPerMonth,
 
         @NotEmpty
-        List<Genre> preferredGenres,
+        Set<Genre> preferredGenres,
 
         boolean isNeedEmailNotifications,
 

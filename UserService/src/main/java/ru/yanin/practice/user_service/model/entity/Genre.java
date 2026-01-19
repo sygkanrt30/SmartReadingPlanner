@@ -20,5 +20,28 @@ public enum Genre {
     CLASSIC,
     GRAPHIC_NOVEL,
     SELF_HELP,
-    SCIENCE
+    SCIENCE,
+    SATIRE,
+    DYSTOPIAN,
+    UTOPIA,
+    WESTERN,
+    CRIME,
+    NOIR,
+    PSYCHOLOGICAL,
+    PHILOSOPHICAL,
+    EPIC,
+    SHORT_STORY,
+    NOVELLA,
+    ESSAY,
+    DIARY,
+    LETTERS;
+
+    public static boolean isValidValue(String value) {
+        for (var genre : values()) {
+            if (genre.name().equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

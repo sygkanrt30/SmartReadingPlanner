@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 @Table("reading_profiles")
 public record ReadingProfile(
@@ -28,7 +28,7 @@ public record ReadingProfile(
         String timezone,
 
         @Column("preferred_genres")
-        List<Genre> preferredGenres,
+        Set<Genre> preferredGenres,
 
         @CreatedDate
         @Column("created_at")
