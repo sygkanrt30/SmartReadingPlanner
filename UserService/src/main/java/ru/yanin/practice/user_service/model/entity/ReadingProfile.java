@@ -22,6 +22,9 @@ public record ReadingProfile(
         @Column("daily_goal")
         int minPerDay,
 
+        @Column("month_goal")
+        int bookPerMonth,
+
         String timezone,
 
         @Column("preferred_genres")

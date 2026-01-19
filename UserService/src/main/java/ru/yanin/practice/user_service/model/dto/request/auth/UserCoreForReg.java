@@ -28,6 +28,8 @@ public record UserCoreForReg(
 
         int minPerDay,
 
+        int bookPerMonth,
+
         @NotEmpty
         List<Genre> preferredGenres,
 

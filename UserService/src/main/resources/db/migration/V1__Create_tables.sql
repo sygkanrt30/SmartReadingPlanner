@@ -26,6 +26,7 @@ CREATE TABLE reading_profiles (
     user_id BIGINT NOT NULL UNIQUE,
     reading_speed INTEGER DEFAULT 200,
     daily_goal INTEGER DEFAULT 30,
+    month_goal INTEGER DEFAULT 1,
     timezone VARCHAR(40) DEFAULT 'Europe/Moscow',
     preferred_genres TEXT[] DEFAULT '{}',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
