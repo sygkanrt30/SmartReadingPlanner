@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.yanin.practise.bookservice.model.dto.AuthorDto;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
 import ru.yanin.practise.bookservice.model.dto.GoogleBooksResponse;
-import ru.yanin.practise.bookservice.model.entity.Author;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.shared.genre.Genre;
 

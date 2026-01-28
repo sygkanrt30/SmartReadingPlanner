@@ -36,40 +36,40 @@ public class BookImportServiceImpl implements BookImportService {
 
     @Override
     public BookDto importBookByIsbn(String isbn, Long userId) {
-        Optional<Book> optionalBook = findBookInStorages(isbn, bookRepository::findByIsbn);
-        if (optionalBook.isEmpty()) {
-            return importBookIfBookNotInStorages(isbn, userId);
-        }
-
-        log.debug("Book with ISBN {} found in storages", isbn);
-        Book book = optionalBook.get();
-        tieBookToUser(userId, book.getId());
-        return bookMapper.toBookDto(book);
+        Optional<Book> optionalBook = findBookInStores(isbn, bookRepository::findByIsbn);
+        return importBook(optionalBook, isbn, userId);
     }
 
-    private Optional<Book> findBookInStorages(String bookIsbnOrName,
-                                              Function<String, Optional<Book>> function) {
-        Optional<Book> book = cacheService.get(bookIsbnOrName);
+    private Optional<Book> findBookInStores(String identParam,
+                                            Function<String, Optional<Book>> function) {
+        Optional<Book> book = cacheService.get(identParam);
         if (book.isPresent()) {
-            log.debug("Book found in cache: {}", bookIsbnOrName);
+            log.trace("Book found in cache: {}", identParam);
             return book;
         }
-        return function.apply(bookIsbnOrName);
+        return function.apply(identParam);
     }
 
-    private BookDto importBookIfBookNotInStorages(String isbnOrName, Long userId) {
-        log.trace("Book with {} not found in storages", isbnOrName);
-        GoogleBooksResponse.BookItem bookItem = googleBookService.searchByBookName(isbnOrName)
+    private BookDto importBook(Optional<Book> optionalBook, String identParam, Long userId) {
+        return switch (optionalBook.isEmpty()) {
+            case true -> importIfBookNotInStores(identParam, userId);
+            case false -> importIfBookInStore(optionalBook.get(), userId);
+        };
+    }
+
+    private BookDto importIfBookNotInStores(String identParam, Long userId) {
+        log.trace("Book with {} not found in storages", identParam);
+        GoogleBooksResponse.BookItem bookItem = googleBookService.searchByBookName(identParam)
                 .items()
                 .getFirst();
 
         Book savedBook = saveBook(bookItem);
         Long bookId = savedBook.getId();
-        log.debug("Book with {} saved, id: {}", isbnOrName, bookId);
+        log.debug("Book with identParam {} saved, id: {}", identParam, bookId);
         tieBookToUser(userId, bookId);
 
-        cacheService.cache(isbnOrName, savedBook);
-        log.debug("Book with {} cached", isbnOrName);
+        cacheService.cache(identParam, savedBook);
+        log.trace("Book with identParam {} cached", identParam);
         return bookMapper.toBookDto(savedBook);
     }
 
@@ -94,26 +94,24 @@ public class BookImportServiceImpl implements BookImportService {
         userBookJdbcInsert.execute(Map.of(
                 "user_id", userId,
                 "book_id", bookId));
-
         log.info("Book with id {}, tied to user id: {}", bookId, userId);
     }
 
-    @Override
-    public BookDto importBookByName(String bookName, Long userId) {
-        Optional<Book> optionalBook = findBookInStorages(bookName, bookRepository::findByTitle);
-        if (optionalBook.isEmpty()) {
-            return importBookIfBookNotInStorages(bookName, userId);
-        }
-
-        log.debug("Book with name {} found in storages", bookName);
-        Book book = optionalBook.get();
+    private BookDto importIfBookInStore(Book book, Long userId) {
+        log.debug("Book with id {} found in storages", book.getId());
         tieBookToUser(userId, book.getId());
         return bookMapper.toBookDto(book);
     }
 
     @Override
+    public BookDto importBookByName(String bookName, Long userId) {
+        Optional<Book> optionalBook = findBookInStores(bookName, bookRepository::findByTitle);
+        return importBook(optionalBook, bookName, userId);
+    }
+
+    @Override
     public BookDto previewBook(String isbn) {
-        Optional<Book> book = findBookInStorages(isbn, bookRepository::findByIsbn);
+        Optional<Book> book = findBookInStores(isbn, bookRepository::findByIsbn);
         if (book.isPresent()) {
             log.debug("Book found in storages: {}", isbn);
             return bookMapper.toBookDto(book.get());
