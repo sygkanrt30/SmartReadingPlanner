@@ -6,8 +6,8 @@ import com.nimbusds.jwt.EncryptedJWT;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.yanin.practice.token.ClaimName;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.token.ClaimName;
+import ru.yanin.shared.token.Token;
 
 import java.text.ParseException;
 import java.util.UUID;

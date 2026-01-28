@@ -2,7 +2,7 @@ package ru.yanin.practice.user_service.model.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import ru.yanin.practice.user_service.model.entity.Genre;
+import ru.yanin.shared.genre.Genre;
 import ru.yanin.practice.user_service.model.entity.UserPrivacyLevel;
 
 import java.time.LocalDate;

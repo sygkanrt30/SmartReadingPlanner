@@ -1,4 +1,4 @@
-package ru.yanin.practice.exception;
+package ru.yanin.shared.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

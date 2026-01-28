@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.token.Token;
 
 import java.time.Instant;
 import java.util.Objects;
 
-import static ru.yanin.practice.cookie.CookieName.HOST_AUTH_TOKEN;
+import static ru.yanin.shared.cookie.CookieName.HOST_AUTH_TOKEN;
 
 @Service
 @RequiredArgsConstructor

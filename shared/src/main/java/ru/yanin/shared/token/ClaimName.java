@@ -1,12 +1,13 @@
-package ru.yanin.practice.cookie;
+package ru.yanin.shared.token;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum CookieName {
-    HOST_AUTH_TOKEN("__Host-auth-token");
+public enum ClaimName {
+    ROLE("role"),
+    USER_ID("user_id");
 
     private final String name;
 }

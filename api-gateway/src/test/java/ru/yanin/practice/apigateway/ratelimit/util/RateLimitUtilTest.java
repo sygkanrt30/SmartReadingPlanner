@@ -24,7 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import ru.yanin.practice.apigateway.config.RateLimitConfig;
 import ru.yanin.practice.apigateway.token.TokenService;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.token.Token;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;

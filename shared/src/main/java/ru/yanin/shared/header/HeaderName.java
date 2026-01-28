@@ -1,4 +1,4 @@
-package ru.yanin.practice.header;
+package ru.yanin.shared.header;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

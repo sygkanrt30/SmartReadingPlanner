@@ -1,4 +1,4 @@
-package ru.yanin.practice.user_service.exception.handler;
+package ru.yanin.shared.exception;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;

@@ -1,4 +1,4 @@
-package ru.yanin.practice.token;
+package ru.yanin.shared.token;
 
 import java.time.Instant;
 import java.util.List;

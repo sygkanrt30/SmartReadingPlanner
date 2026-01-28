@@ -17,13 +17,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.yanin.practice.apigateway.exception.InvalidTokenException;
 import ru.yanin.practice.apigateway.token.TokenService;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.token.Token;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.yanin.practice.header.HeaderName.*;
+import static ru.yanin.shared.header.HeaderName.*;
 
 @Component
 @Slf4j

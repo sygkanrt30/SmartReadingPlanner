@@ -9,7 +9,8 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.yanin.practice.exception.PropertyName;
+import ru.yanin.shared.exception.ParentException;
+import ru.yanin.shared.exception.PropertyName;
 
 import java.time.Instant;
 

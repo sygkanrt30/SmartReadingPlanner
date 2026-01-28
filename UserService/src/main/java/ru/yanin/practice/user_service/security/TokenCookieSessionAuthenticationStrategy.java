@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import ru.yanin.practice.cookie.CookieName;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.cookie.CookieName;
+import ru.yanin.shared.token.Token;
 import ru.yanin.practice.user_service.service.token.util.TokenCookieFactory;
 
 import java.time.Instant;

@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import ru.yanin.practice.token.ClaimName;
+import ru.yanin.shared.token.ClaimName;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

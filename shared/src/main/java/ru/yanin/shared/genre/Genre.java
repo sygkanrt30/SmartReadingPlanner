@@ -1,4 +1,4 @@
-package ru.yanin.practice.user_service.model.entity;
+package ru.yanin.shared.genre;
 
 public enum Genre {
     FICTION,
@@ -21,6 +21,7 @@ public enum Genre {
     GRAPHIC_NOVEL,
     SELF_HELP,
     SCIENCE,
+    COMPUTERS,
     SATIRE,
     DYSTOPIAN,
     UTOPIA,
@@ -34,14 +35,17 @@ public enum Genre {
     NOVELLA,
     ESSAY,
     DIARY,
-    LETTERS;
+    LETTERS,
 
-    public static boolean isValidValue(String value) {
+    NO_GENRE;
+
+
+    public static Genre genreFrom(String value){
         for (var genre : values()) {
-            if (genre.name().equals(value)) {
-                return true;
+            if (genre.name().equalsIgnoreCase(value)) {
+                return genre;
             }
         }
-        return false;
+        return NO_GENRE;
     }
 }

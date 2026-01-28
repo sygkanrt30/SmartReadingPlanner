@@ -1,7 +1,7 @@
 package ru.yanin.practice.user_service.exception;
 
 import org.springframework.http.HttpStatus;
-import ru.yanin.practice.user_service.exception.handler.ParentException;
+import ru.yanin.shared.exception.ParentException;
 
 public class DataConvertFailException extends ParentException {
     public DataConvertFailException(String message, Throwable cause) {

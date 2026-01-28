@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import ru.yanin.practice.apigateway.config.RateLimitConfig;
 import ru.yanin.practice.apigateway.exception.ExtractTokenException;
 import ru.yanin.practice.apigateway.token.TokenService;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.token.Token;
 
 import java.time.Duration;
 import java.util.Map;

@@ -3,7 +3,7 @@ package ru.yanin.practice.user_service.service.token.util;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.token.Token;
 
 import java.time.Duration;
 import java.time.Instant;

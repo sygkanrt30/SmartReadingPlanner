@@ -6,7 +6,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.yanin.practice.apigateway.exception.ExtractTokenException;
-import ru.yanin.practice.exception.PropertyName;
+import ru.yanin.shared.exception.PropertyName;
 
 import java.time.Instant;
 

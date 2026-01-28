@@ -1,4 +1,4 @@
-package ru.yanin.practice.user_service.security;
+package ru.yanin.shared.header;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,7 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-import static ru.yanin.practice.header.HeaderName.PROCESSED;
+import static ru.yanin.shared.header.HeaderName.PROCESSED;
 
 public class GatewayHeaderFilter extends OncePerRequestFilter {
 

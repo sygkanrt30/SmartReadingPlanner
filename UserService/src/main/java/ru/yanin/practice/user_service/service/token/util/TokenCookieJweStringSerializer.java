@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.yanin.practice.token.ClaimName;
-import ru.yanin.practice.token.Token;
+import ru.yanin.shared.token.ClaimName;
+import ru.yanin.shared.token.Token;
 
 import java.util.Date;
 import java.util.function.Function;
