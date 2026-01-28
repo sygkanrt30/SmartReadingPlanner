@@ -23,9 +23,7 @@ public class RedisCodeStorageService implements CodeStorageService {
     @Override
     public void saveCode(String email, String code) {
         String key = KEY_PREFIX + email;
-        redisTemplate.opsForValue().set(
-                key,
-                code,
+        redisTemplate.opsForValue().set(key, code,
                 keyExpirationTimeout, TimeUnit.SECONDS
         );
         log.debug("Code saved for key: {} on 60 sec", key);

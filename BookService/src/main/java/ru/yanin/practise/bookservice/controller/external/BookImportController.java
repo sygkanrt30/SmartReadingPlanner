@@ -1,0 +1,47 @@
+package ru.yanin.practise.bookservice.controller.external;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.yanin.practise.bookservice.model.dto.BookDto;
+import ru.yanin.practise.bookservice.service.book.BookImportService;
+
+import java.util.Objects;
+
+@RestController
+@RequestMapping("/api/v1/books/import")
+@RequiredArgsConstructor
+//todo тесты на этот класс
+public class BookImportController {
+
+    private final BookImportService importService;
+
+    //todo ручное тестирование
+
+
+    @PostMapping("/isbn/{isbn}")
+    public ResponseEntity<BookDto> importBookByIsbn(@PathVariable String isbn,
+                                                    @RequestHeader("X-User-ID") Long userId) {
+        String cleanIsbn = isbn.replaceAll("[\\s-]", "");
+        BookDto importedBook = importService.importBookByIsbn(cleanIsbn, userId);
+        return ResponseEntity.ok(importedBook);
+    }
+
+    @PostMapping("/name/{book_name}")
+    public ResponseEntity<BookDto> importBookByName(@PathVariable("book_name") String bookName,
+                                                    @RequestHeader("X-User-ID") Long userId) {
+        BookDto importedBook = importService.importBookByName(bookName, userId);
+        return ResponseEntity.ok(importedBook);
+    }
+
+    @GetMapping("/preview/{isbn}")
+    public ResponseEntity<BookDto> previewBook(@PathVariable String isbn) {
+        String cleanIsbn = isbn.replaceAll("[\\s-]", "");
+        BookDto response = importService.previewBook(cleanIsbn);
+
+        if (Objects.isNull(response)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
+    }
+}
