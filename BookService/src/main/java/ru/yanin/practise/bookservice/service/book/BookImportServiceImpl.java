@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
-//todo тесты на этот класс
 public class BookImportServiceImpl implements BookImportService {
 
     private final BookMapper bookMapper;
@@ -69,7 +67,6 @@ public class BookImportServiceImpl implements BookImportService {
         tieBookToUser(userId, bookId);
 
         cacheService.cache(identParam, savedBook);
-        log.trace("Book with identParam {} cached", identParam);
         return bookMapper.toBookDto(savedBook);
     }
 

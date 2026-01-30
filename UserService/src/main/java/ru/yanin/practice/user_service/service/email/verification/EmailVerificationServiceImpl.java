@@ -10,8 +10,6 @@ import ru.yanin.practice.user_service.service.email.verification.storage.CodeSto
 import ru.yanin.practice.user_service.service.rabbitMq.Producer;
 import ru.yanin.practice.user_service.service.user.user_credentials.UserCredentialService;
 
-import java.util.Random;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,18 +26,11 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         if (!isBelongToSameUser) {
             throw new NotAcceptableException("Email verification failed");
         }
-        String code = generateCode();
+        String code = CodeGenerator.generateCode();
         codeStorageService.saveCode(code, email);
         var verificationEvent = new VerificationEvent(email, code);
         producer.send(verificationEvent);
         log.info("Code sent successfully");
-    }
-
-    private String generateCode() {
-        var random = new Random();
-        int firstCodePart = 100 + random.nextInt(899);
-        int secondCodePart = 100 + random.nextInt(899);
-        return String.format("%d%d", firstCodePart, secondCodePart);
     }
 
     @Override
