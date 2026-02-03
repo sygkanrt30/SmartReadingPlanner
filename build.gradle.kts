@@ -55,10 +55,12 @@ subprojects {
 
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
+        options.compilerArgs.add("--enable-preview")
     }
 
     tasks.withType<Test> {
         systemProperty("file.encoding", "UTF-8")
+        jvmArgs("--enable-preview")
     }
 
     tasks.register("prepareKotlinBuildScriptModel") {

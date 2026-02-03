@@ -1,5 +1,6 @@
 package ru.yanin.practice.user_service.model.entity;
 
+import lombok.Builder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -9,6 +10,7 @@ import ru.yanin.shared.genre.Genre;
 import java.time.Instant;
 import java.util.Set;
 
+@Builder
 @Table("reading_profiles")
 public record ReadingProfile(
         @Id
