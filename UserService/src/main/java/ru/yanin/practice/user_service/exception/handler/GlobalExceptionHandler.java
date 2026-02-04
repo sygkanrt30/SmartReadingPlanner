@@ -1,7 +1,5 @@
 package ru.yanin.practice.user_service.exception.handler;
 
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotAcceptableException;
 import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,6 +7,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yanin.shared.exception.ParentException;
 import ru.yanin.shared.exception.PropertyName;
 
@@ -23,16 +22,6 @@ public class GlobalExceptionHandler {
         return getAppErrorHandlerResponseDto(e, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(NotAcceptableException.class)
-    public ProblemDetail NotAcceptableException(Exception e) {
-        return getAppErrorHandlerResponseDto(e, HttpStatus.NOT_ACCEPTABLE);
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ProblemDetail BadRequestException(Exception e) {
-        return getAppErrorHandlerResponseDto(e, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler
     public ProblemDetail catchIllegalArgumentException(IllegalArgumentException e) {
         return getAppErrorHandlerResponseDto(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -41,6 +30,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ProblemDetail catchCustomException(ParentException e) {
         return getAppErrorHandlerResponseDto(e, e.responseStatus());
+    }
+
+    @ExceptionHandler
+    public ProblemDetail catchResponseException(ResponseStatusException e) {
+        return getAppErrorHandlerResponseDto(e, HttpStatus.resolve(e.getStatusCode().value()));
     }
 
     private ProblemDetail getAppErrorHandlerResponseDto(Exception e, HttpStatus status) {

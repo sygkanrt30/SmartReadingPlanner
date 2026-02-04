@@ -51,7 +51,7 @@ class ReadingProfileServiceImplTest {
 
         readingProfileServiceImpl.updateReadingGoals(1L, request);
 
-        ArgumentCaptor<ReadingProfile> profileCaptor = ArgumentCaptor.forClass(ReadingProfile.class);
+        ArgumentCaptor<ReadingProfile> profileCaptor = ArgumentCaptor.captor();
         verify(readingProfileRepository).save(profileCaptor.capture());
         ReadingProfile savedProfile = profileCaptor.getValue();
         assertEquals(120, savedProfile.minPerDay());

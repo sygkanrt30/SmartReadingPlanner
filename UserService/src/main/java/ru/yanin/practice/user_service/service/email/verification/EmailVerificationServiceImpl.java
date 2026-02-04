@@ -1,14 +1,16 @@
 package ru.yanin.practice.user_service.service.email.verification;
 
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotAcceptableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yanin.practice.user_service.model.dto.rabbit.VerificationEvent;
 import ru.yanin.practice.user_service.service.email.verification.storage.CodeStorageService;
 import ru.yanin.practice.user_service.service.rabbitMq.Producer;
 import ru.yanin.practice.user_service.service.user.user_credentials.UserCredentialService;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 
 @Service
 @Slf4j
@@ -24,7 +26,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     public void sendCode(String email, Long userId) {
         boolean isBelongToSameUser = userService.checkUserIdAndEmailBelongToSameUser(email, userId);
         if (!isBelongToSameUser) {
-            throw new NotAcceptableException("Email verification failed");
+            throw new ResponseStatusException(NOT_ACCEPTABLE,"Email verification failed");
         }
         String code = CodeGenerator.generateCode();
         codeStorageService.saveCode(code, email);
@@ -36,10 +38,13 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     @Override
     public void verifyEmail(String email, String code) {
         String storedCode = codeStorageService.getCode(email)
-                .orElseThrow(() -> new BadRequestException("The code is out of date or not found"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        BAD_REQUEST,
+                        "The code is out of date or not found"
+                ));
 
         if (!storedCode.equals(code)) {
-            throw new BadRequestException("Invalid code");
+            throw new ResponseStatusException(BAD_REQUEST, "Invalid code");
         }
         codeStorageService.deleteCode(email);
         userService.changeEmailVerificationStatus(email);
