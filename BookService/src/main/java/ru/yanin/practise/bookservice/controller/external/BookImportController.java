@@ -4,20 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.service.book.BookImportService;
+import ru.yanin.practise.bookservice.service.book.import_book.BookImportService;
 
 import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/books/import")
 @RequiredArgsConstructor
-//todo тесты на этот класс
 public class BookImportController {
 
     private final BookImportService importService;
-
-    //todo ручное тестирование
-
 
     @PostMapping("/isbn/{isbn}")
     public ResponseEntity<BookDto> importBookByIsbn(@PathVariable String isbn,

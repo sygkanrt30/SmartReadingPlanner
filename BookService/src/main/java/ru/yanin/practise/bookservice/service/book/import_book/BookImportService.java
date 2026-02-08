@@ -1,4 +1,4 @@
-package ru.yanin.practise.bookservice.service.book;
+package ru.yanin.practise.bookservice.service.book.import_book;
 
 import ru.yanin.practise.bookservice.model.dto.BookDto;
 

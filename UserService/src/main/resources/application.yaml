@@ -54,10 +54,11 @@ spring:
 
 
 jwt:
-  cookie-token-key: '{"kty":"oct","k":"956PBFst1FguLr5irJD-aQ"}'
+  cookie-token-key: ${JWT_COOKIE_TOKEN_KEY}
 
 server:
   forward-headers-strategy: framework
+  port: 8080
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 1

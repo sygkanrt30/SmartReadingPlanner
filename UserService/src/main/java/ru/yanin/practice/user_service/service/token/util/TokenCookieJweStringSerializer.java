@@ -33,8 +33,8 @@ public class TokenCookieJweStringSerializer implements Function<Token, String> {
                 .subject(token.username())
                 .issueTime(Date.from(token.createdAt()))
                 .expirationTime(Date.from(token.expiresAt()))
-                .claim(ClaimName.ROLE.name(), token.roles())
-                .claim(ClaimName.USER_ID.name(), token.userId())
+                .claim(ClaimName.ROLE.getName(), token.roles())
+                .claim(ClaimName.USER_ID.getName(), token.userId())
                 .build();
         return try2GetEncryptedJWT(jwsHeader, claimsSet);
     }

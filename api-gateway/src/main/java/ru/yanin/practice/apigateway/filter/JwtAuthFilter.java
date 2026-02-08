@@ -121,7 +121,7 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
+        return Ordered.LOWEST_PRECEDENCE;
     }
 
     @Setter

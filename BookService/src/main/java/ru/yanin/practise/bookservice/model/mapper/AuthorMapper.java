@@ -1,4 +1,4 @@
-package ru.yanin.practise.bookservice.model.dto.mapper;
+package ru.yanin.practise.bookservice.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,5 +1,6 @@
 package ru.yanin.practise.bookservice.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,31 +32,10 @@ public class Author {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
+    @ManyToMany(mappedBy = "authors")
+    @JsonIgnore
     @ToString.Exclude
-    private Set<BookAuthor> bookAuthors = new HashSet<>();
-
-    public void addBook(Book book) {
-        var bookAuthor = BookAuthor.builder()
-                .book(book)
-                .author(this)
-                .build();
-        bookAuthors.add(bookAuthor);
-        book.getBookAuthors().add(bookAuthor);
-    }
-
-    public void removeBook(Book book) {
-        var bookAuthor = bookAuthors.stream()
-                .filter(ba -> ba.getBook().equals(book))
-                .findFirst()
-                .orElse(null);
-
-        if (Objects.nonNull(bookAuthor)) {
-            bookAuthors.remove(bookAuthor);
-            book.getBookAuthors().remove(bookAuthor);
-        }
-    }
+    private Set<Book> books = new HashSet<>();
 
     @Override
     public final boolean equals(Object o) {

@@ -6,5 +6,5 @@ public interface GoogleBookService {
 
     GoogleBooksResponse searchByISBN(String isbn);
 
-    GoogleBooksResponse searchByBookName(String bookName);
+    GoogleBooksResponse searchByName(String bookName);
 }

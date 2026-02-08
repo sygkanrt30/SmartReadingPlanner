@@ -13,11 +13,9 @@ import java.util.UUID;
 
 import static ru.yanin.shared.header.HeaderName.*;
 
-
 @Component
 @Slf4j
 public class GlobalLoggingFilter implements GlobalFilter, Ordered {
-
 
     private static final String START_TIME_ATTR_NAME = "startTime";
 
@@ -25,7 +23,7 @@ public class GlobalLoggingFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        log.trace("Incoming request: {} {} from {}",
+        log.debug("Incoming request: {} {} from {}",
                 request.getMethod(),
                 request.getURI(),
                 request.getRemoteAddress());
@@ -49,13 +47,15 @@ public class GlobalLoggingFilter implements GlobalFilter, Ordered {
         if (startTime != null) {
             long duration = System.currentTimeMillis() - startTime;
             log.debug("{} Request processed in {} ms", exchange.getLogPrefix(), duration);
-            exchange.getResponse().getHeaders()
-                    .add(PROCESSING_TIME.value(), duration + "ms");
+            if (!exchange.getResponse().isCommitted()) {
+                exchange.getResponse().getHeaders()
+                        .add(PROCESSING_TIME.value(), duration + "ms");
+            }
         }
     }
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 }

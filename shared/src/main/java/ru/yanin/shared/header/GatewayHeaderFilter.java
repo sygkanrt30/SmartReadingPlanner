@@ -19,7 +19,7 @@ public class GatewayHeaderFilter extends OncePerRequestFilter {
 
     public GatewayHeaderFilter() {
         skipPathMatchers = List.of(
-                PathPatternRequestMatcher.withDefaults().matcher("/**/*internal*/**"),
+                PathPatternRequestMatcher.withDefaults().matcher("/*/*internal*/**"),
                 PathPatternRequestMatcher.withDefaults().matcher("/*internal*/**"),
                 PathPatternRequestMatcher.withDefaults().matcher("/actuator/**")
         );

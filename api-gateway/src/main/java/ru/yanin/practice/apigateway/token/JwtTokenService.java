@@ -24,7 +24,7 @@ public class JwtTokenService implements TokenService {
 
     @Override
     public Token extractToken(ServerHttpRequest request) {
-        String cookieName = HOST_AUTH_TOKEN.getName();
+        String cookieName = HOST_AUTH_TOKEN.name();
         HttpCookie cookie = request.getCookies().getFirst(cookieName);
         String stringToken = Objects.requireNonNull(cookie,
                         String.format("Cookie with name %s not found in request's cookies", cookieName))

@@ -1,4 +1,4 @@
-package ru.yanin.practise.bookservice.model.dto.mapper;
+package ru.yanin.practise.bookservice.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -46,7 +46,11 @@ public interface BookMapper {
                 .collect(Collectors.toSet());
     }
 
+    @Mapping(target = "bookId", source = "book.id")
     BookDto toBookDto(Book book);
+
+    @Mapping(target = "id", source = "bookDto.bookId")
+    Book toBook(BookDto bookDto);
 
     @Mapping(target = "isbn", expression = "java(bookItem.volumeInfo().getIsbn13())")
     @Mapping(target = "title", source = "bookItem.volumeInfo.title")
@@ -57,6 +61,7 @@ public interface BookMapper {
     @Mapping(target = "description", source = "bookItem.volumeInfo.description")
     @Mapping(target = "imageLink", source = "bookItem.volumeInfo.imageLinks.thumbnail")
     @Mapping(target = "genre", expression = "java(getGenre(bookItem.volumeInfo().categories()))")
+    @Mapping(target = "id", ignore = true)
     Book toBook(GoogleBooksResponse.BookItem bookItem);
 
 }

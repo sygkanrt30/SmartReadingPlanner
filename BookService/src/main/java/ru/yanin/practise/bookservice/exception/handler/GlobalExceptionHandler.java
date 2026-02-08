@@ -15,7 +15,7 @@ import java.time.Instant;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class})
-    public ProblemDetail catchInternalServerError(NullPointerException e) {
+    public ProblemDetail catchInternalServerError(Exception e) {
         return getAppErrorHandlerResponseDto(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

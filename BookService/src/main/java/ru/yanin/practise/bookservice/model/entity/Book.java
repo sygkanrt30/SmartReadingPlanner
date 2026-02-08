@@ -1,9 +1,9 @@
 package ru.yanin.practise.bookservice.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Formula;
 import org.hibernate.proxy.HibernateProxy;
 import ru.yanin.shared.genre.Genre;
 
@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "books")
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"bookAuthors", "ratings"})
+@ToString(exclude = {"ratings", "authors"})
 public class Book {
 
     @Id
@@ -64,30 +63,17 @@ public class Book {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<BookAuthor> bookAuthors = new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "book_authors",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
+    @JsonIgnore
+    private Set<Author> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookRating> ratings = new HashSet<>();
-
-    @Formula("(SELECT COUNT(*) FROM book_authors ba WHERE ba.book_id = id)")
-    private Integer authorCount;
-
-    @Transient
-    public Set<Author> getAuthors() {
-        return bookAuthors.stream()
-                .map(BookAuthor::getAuthor)
-                .collect(Collectors.toSet());
-    }
-
-    public void addAuthor(Author author) {
-        var bookAuthor = BookAuthor.builder()
-                .book(this)
-                .author(author)
-                .build();
-        bookAuthors.add(bookAuthor);
-        author.getBookAuthors().add(bookAuthor);
-    }
 
     public void addRating(Long userId, Integer ratingValue) {
         var rating = BookRating.builder()

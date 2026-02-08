@@ -7,7 +7,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
-    implementation(project(":shared"))
+    implementation(project(":shared")) {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-security")
+    }
     implementation("com.nimbusds:nimbus-jose-jwt:${property("nimbusVersion")}")
 
     testImplementation("org.testcontainers:junit-jupiter")
