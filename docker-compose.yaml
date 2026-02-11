@@ -81,13 +81,6 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-#  rabbitmq_book_user:
-#    <<: *rabbitMq-common
-#    container_name: rabbitmq_for_book_user_services
-#    ports:
-#      - "5674:5672"
-#      - "15674:15672"
-
 networks:
   general-network:
     driver: bridge
