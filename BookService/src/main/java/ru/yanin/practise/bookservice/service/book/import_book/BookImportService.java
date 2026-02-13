@@ -8,5 +8,9 @@ public interface BookImportService {
 
     BookDto importBookByTitle(String bookName, Long userId);
 
+    BookDto importBookByIsbnAndSendEventForPlanning(String isbn, Long userId);
+
+    BookDto importBookByTitleAndSendEventForPlanning(String bookName, Long userId);
+
     BookDto previewBook(String isbn);
 }

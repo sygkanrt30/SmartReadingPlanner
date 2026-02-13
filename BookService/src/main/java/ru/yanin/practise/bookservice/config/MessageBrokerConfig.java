@@ -1,4 +1,5 @@
-package ru.yanin.practice.user_service.config;
+package ru.yanin.practise.bookservice.config;
+
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -8,9 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
-public class RabbitMqConfig {
+public class MessageBrokerConfig {
 
     @Value("${spring.rabbitmq.queue.name}")
     private String queueName;
@@ -26,8 +26,7 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue myQueue() {
-        return QueueBuilder
-                .nonDurable(queueName)
+        return QueueBuilder.durable(queueName)
                 .ttl(ttl)
                 .build();
     }
@@ -50,7 +49,7 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplateForVerification(ConnectionFactory connectionFactory) {
+    public RabbitTemplate rabbitTemplateForPlanEvent(ConnectionFactory connectionFactory) {
         var template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(jsonMessageConverter());
         template.setDefaultReceiveQueue(queueName);

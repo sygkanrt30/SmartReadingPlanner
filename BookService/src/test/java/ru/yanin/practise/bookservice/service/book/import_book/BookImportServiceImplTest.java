@@ -12,9 +12,11 @@ import ru.yanin.practise.bookservice.model.dto.BookDto;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 import ru.yanin.practise.bookservice.model.mapper.BookMapperImpl;
+import ru.yanin.practise.bookservice.model.mapper.ReadingPlanCalculationEventMapper;
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
 import ru.yanin.practise.bookservice.service.book.external_book_api.BookApiService;
+import ru.yanin.practise.bookservice.service.message_broker.rabbitMq.Producer;
 import ru.yanin.shared.genre.Genre;
 
 import java.util.Optional;
@@ -23,6 +25,7 @@ import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings("unchecked")
 @ExtendWith(MockitoExtension.class)
 class BookImportServiceImplTest {
 
@@ -42,7 +45,13 @@ class BookImportServiceImplTest {
     @BeforeEach
     void setUp() {
         bookMapper = new BookMapperImpl();
-        bookImportService = new BookImportServiceImpl(bookMapper, bookService, managementBookApiService, cacheService);
+        bookImportService = new BookImportServiceImpl(
+                bookMapper,
+                mock(ReadingPlanCalculationEventMapper.class),
+                bookService,
+                mock(Producer.class),
+                managementBookApiService,
+                cacheService);
     }
 
     @Test

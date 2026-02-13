@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yanin.practise.bookservice.exception.BookNotFoundInApiException;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
+import ru.yanin.practise.bookservice.model.dto.ReadingPlanCalculationEvent;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
+import ru.yanin.practise.bookservice.model.mapper.ReadingPlanCalculationEventMapper;
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
 import ru.yanin.practise.bookservice.service.book.external_book_api.BookApiService;
+import ru.yanin.practise.bookservice.service.message_broker.rabbitMq.Producer;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,7 +24,9 @@ import java.util.function.Function;
 public class BookImportServiceImpl implements BookImportService {
 
     private final BookMapper bookMapper;
+    private final @Qualifier("readingPlanCalculationEventMapper") ReadingPlanCalculationEventMapper eventMapper;
     private final BookService bookService;
+    private final Producer<ReadingPlanCalculationEvent> eventProducer;
     private final @Qualifier("managementBookApiService") BookApiService managementBookApiService;
     private final CacheService<String, BookDto> cacheService;
 
@@ -79,6 +84,25 @@ public class BookImportServiceImpl implements BookImportService {
         BookDto bookDto = bookService.save(dtoOptional.get(), userId);
         cacheService.cache(identParam, bookDto);
         log.debug("Book saved with id {} in db and in stores", bookDto.bookId());
+        return bookDto;
+    }
+
+    @Override
+    public BookDto importBookByIsbnAndSendEventForPlanning(String isbn, Long userId) {
+        var bookDto = importBookByIsbn(isbn, userId);
+        convertAndSendEvent(userId, bookDto);
+        return bookDto;
+    }
+
+    private void convertAndSendEvent(Long userId, BookDto bookDto) {
+        ReadingPlanCalculationEvent event = eventMapper.toEvent(bookDto, userId);
+        eventProducer.send(event);
+    }
+
+    @Override
+    public BookDto importBookByTitleAndSendEventForPlanning(String bookName, Long userId) {
+        var bookDto = importBookByTitle(bookName, userId);
+        convertAndSendEvent(userId, bookDto);
         return bookDto;
     }
 

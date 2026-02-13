@@ -40,6 +40,27 @@ spring:
         shutdown-timeout: 100ms
       book:
         ttl: 43200
+  rabbitmq:
+    host: localhost
+    port: 5673
+    username: admin
+    password: admin123
+    virtual-host: /
+    connection-timeout: 5000
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        multiplier: 2.0
+    queue:
+      name: planning.from_book_service.queue
+      message:
+        ttl: 70000
+      exchange:
+        name: planning.from_book_service.exchange
+      routing:
+        key: planning.from_book_service.routing.key
 
 google:
   books:
