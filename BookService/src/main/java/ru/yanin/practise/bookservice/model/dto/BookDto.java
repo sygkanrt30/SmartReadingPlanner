@@ -1,11 +1,13 @@
 package ru.yanin.practise.bookservice.model.dto;
 
+import lombok.Builder;
 import ru.yanin.shared.genre.Genre;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
+@Builder
 public record BookDto(
         Long bookId,
         String isbn,

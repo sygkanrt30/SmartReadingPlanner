@@ -6,7 +6,7 @@ public interface BookImportService {
 
     BookDto importBookByIsbn(String isbn, Long userId);
 
-    BookDto importBookByName(String bookName, Long userId);
+    BookDto importBookByTitle(String bookName, Long userId);
 
     BookDto previewBook(String isbn);
 }

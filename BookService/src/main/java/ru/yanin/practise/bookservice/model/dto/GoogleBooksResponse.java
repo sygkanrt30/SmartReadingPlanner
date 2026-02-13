@@ -75,13 +75,6 @@ public record GoogleBooksResponse(
                         .findFirst()
                         .orElse(null);
             }
-
-            public String getPrimaryCategory() {
-                if (categories != null && !categories.isEmpty()) {
-                    return categories.getFirst();
-                }
-                return mainCategory;
-            }
         }
 
         public record IndustryIdentifier(String type, String identifier) {

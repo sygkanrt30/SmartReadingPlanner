@@ -7,17 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.yanin.practise.bookservice.exception.BookNotFoundInApiException;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.GoogleBooksResponse;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 import ru.yanin.practise.bookservice.model.mapper.BookMapperImpl;
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
-import ru.yanin.practise.bookservice.service.book.google_book.GoogleBookService;
+import ru.yanin.practise.bookservice.service.book.external_book_api.BookApiService;
 import ru.yanin.shared.genre.Genre;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.instancio.Select.field;
@@ -33,7 +32,7 @@ class BookImportServiceImplTest {
     private BookService bookService;
 
     @Mock
-    private GoogleBookService googleBookService;
+    private BookApiService managementBookApiService;
 
     @Mock
     private CacheService<String, BookDto> cacheService;
@@ -43,7 +42,7 @@ class BookImportServiceImplTest {
     @BeforeEach
     void setUp() {
         bookMapper = new BookMapperImpl();
-        bookImportService = new BookImportServiceImpl(bookMapper, bookService, googleBookService, cacheService);
+        bookImportService = new BookImportServiceImpl(bookMapper, bookService, managementBookApiService, cacheService);
     }
 
     @Test
@@ -109,15 +108,10 @@ class BookImportServiceImplTest {
                 .set(field(BookDto::isbn), isbn)
                 .set(field(BookDto::genre), Genre.COMEDY)
                 .create();
-        var bookItem = Instancio.of(GoogleBooksResponse.BookItem.class)
-                .set(field(GoogleBooksResponse.BookItem.IndustryIdentifier::type), "ISBN_13")
-                .set(field(GoogleBooksResponse.BookItem.IndustryIdentifier::identifier), isbn)
-                .create();
-        var googleBookResponse = new GoogleBooksResponse(List.of(bookItem), 1);
         when(bookService.findByIsbn(isbn)).thenReturn(Optional.empty());
         when(cacheService.get(isbn)).thenReturn(Optional.empty());
-        when(googleBookService.searchByISBN(isbn)).thenReturn(googleBookResponse);
-        when(bookService.save(bookItem, userId)).thenReturn(bookDto);
+        when(managementBookApiService.searchByISBN(isbn)).thenReturn(Optional.of(bookDto));
+        when(bookService.save(bookDto, userId)).thenReturn(bookDto);
 
         BookDto result = bookImportService.importBookByIsbn(isbn, userId);
 
@@ -132,22 +126,27 @@ class BookImportServiceImplTest {
     void importBookByIsbn5() {
         var isbn = "123-456-78320";
         var userId = 10L;
-        var bookDto = Instancio.of(BookDto.class)
-                .set(field(BookDto::isbn), isbn)
-                .set(field(BookDto::genre), Genre.COMEDY)
-                .create();
-        var bookItem = Instancio.of(GoogleBooksResponse.BookItem.class)
-                .set(field(GoogleBooksResponse.BookItem.IndustryIdentifier::type), "ISBN_13")
-                .set(field(GoogleBooksResponse.BookItem.IndustryIdentifier::identifier), isbn)
-                .create();
-        var googleBookResponse = new GoogleBooksResponse(List.of(bookItem), 1);
+        var bookDto = Instancio.create(BookDto.class);
         when(bookService.findByIsbn(isbn)).thenReturn(Optional.empty());
         when(cacheService.get(isbn)).thenReturn(Optional.empty());
-        when(googleBookService.searchByISBN(isbn)).thenReturn(googleBookResponse);
-        when(bookService.save(bookItem, userId)).thenThrow(RuntimeException.class);
+        when(managementBookApiService.searchByISBN(isbn)).thenReturn(Optional.of(bookDto));
+        when(bookService.save(bookDto, userId)).thenThrow(RuntimeException.class);
 
         assertThrows(RuntimeException.class, () -> bookImportService.importBookByIsbn(isbn, userId));
         verify(cacheService, never()).cache(eq(isbn), any());
         verify(bookService, never()).save(eq(bookDto));
+    }
+
+    @Test
+    @DisplayName("Should throw exception when book not found in apis")
+    void importBookByIsbn6() {
+        var isbn = "123-456-78320";
+        var userId = 10L;
+        when(bookService.findByIsbn(isbn)).thenReturn(Optional.empty());
+        when(cacheService.get(isbn)).thenReturn(Optional.empty());
+        when(managementBookApiService.searchByISBN(isbn)).thenReturn(Optional.empty());
+
+        assertThrows(BookNotFoundInApiException.class, () -> bookImportService.importBookByIsbn(isbn, userId));
+        verify(cacheService, never()).cache(eq(isbn), any());
     }
 }

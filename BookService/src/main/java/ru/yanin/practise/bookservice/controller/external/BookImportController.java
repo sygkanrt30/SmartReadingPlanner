@@ -23,10 +23,10 @@ public class BookImportController {
         return ResponseEntity.ok(importedBook);
     }
 
-    @PostMapping("/name/{book_name}")
-    public ResponseEntity<BookDto> importBookByName(@PathVariable("book_name") String bookName,
-                                                    @RequestHeader("X-User-ID") Long userId) {
-        BookDto importedBook = importService.importBookByName(bookName, userId);
+    @PostMapping("/title/{title}")
+    public ResponseEntity<BookDto> importBookByTitle(@PathVariable String title,
+                                                     @RequestHeader("X-User-ID") Long userId) {
+        BookDto importedBook = importService.importBookByTitle(title, userId);
         return ResponseEntity.ok(importedBook);
     }
 

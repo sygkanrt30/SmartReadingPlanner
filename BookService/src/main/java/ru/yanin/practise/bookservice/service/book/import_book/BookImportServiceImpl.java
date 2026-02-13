@@ -2,14 +2,15 @@ package ru.yanin.practise.bookservice.service.book.import_book;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yanin.practise.bookservice.exception.BookNotFoundInApiException;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.GoogleBooksResponse;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
-import ru.yanin.practise.bookservice.service.book.google_book.GoogleBookService;
+import ru.yanin.practise.bookservice.service.book.external_book_api.BookApiService;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,19 +22,19 @@ public class BookImportServiceImpl implements BookImportService {
 
     private final BookMapper bookMapper;
     private final BookService bookService;
-    private final GoogleBookService googleBookService;
+    private final @Qualifier("managementBookApiService") BookApiService managementBookApiService;
     private final CacheService<String, BookDto> cacheService;
 
     @Override
-    public BookDto importBookByName(String title, Long userId) {
+    public BookDto importBookByTitle(String title, Long userId) {
         Optional<BookDto> bookFromStores = findBookWithCacheBackupRecovery(title, bookService::findByTitle);
-        return importBook(bookFromStores, title, userId, googleBookService::searchByName);
+        return importBook(bookFromStores, title, userId, managementBookApiService::searchByTitle);
     }
 
     @Override
     public BookDto importBookByIsbn(String isbn, Long userId) {
         Optional<BookDto> bookFromStores = findBookWithCacheBackupRecovery(isbn, bookService::findByIsbn);
-        return importBook(bookFromStores, isbn, userId, googleBookService::searchByISBN);
+        return importBook(bookFromStores, isbn, userId, managementBookApiService::searchByISBN);
     }
 
     private Optional<BookDto> findBookWithCacheBackupRecovery(String identParam,
@@ -55,7 +56,7 @@ public class BookImportServiceImpl implements BookImportService {
     }
 
     private BookDto importBook(Optional<BookDto> optionalBook, String identParam, Long userId,
-                               Function<String, GoogleBooksResponse> getBookFromApi) {
+                               Function<String, Optional<BookDto>> getBookFromApi) {
         return switch (optionalBook.isPresent()) {
             case true -> {
                 var book = optionalBook.get();
@@ -68,13 +69,14 @@ public class BookImportServiceImpl implements BookImportService {
     }
 
     private BookDto importIfBookNotInStorages(String identParam, Long userId,
-                                              Function<String, GoogleBooksResponse> getBookFromApi) {
+                                              Function<String, Optional<BookDto>> getBookFromApi) {
 
         log.debug("Book with {} not found in storages", identParam);
-        GoogleBooksResponse.BookItem bookItem = getBookFromApi.apply(identParam)
-                .items()
-                .getFirst();
-        BookDto bookDto = bookService.save(bookItem, userId);
+        Optional<BookDto> dtoOptional = getBookFromApi.apply(identParam);
+        if (dtoOptional.isEmpty()) {
+            throw new BookNotFoundInApiException("Book wasn't found by any of supported external book apis");
+        }
+        BookDto bookDto = bookService.save(dtoOptional.get(), userId);
         cacheService.cache(identParam, bookDto);
         log.debug("Book saved with id {} in db and in stores", bookDto.bookId());
         return bookDto;
@@ -87,11 +89,7 @@ public class BookImportServiceImpl implements BookImportService {
             log.trace("Book found in storages: {}", isbn);
             return bookFromStores.get();
         }
-
-        GoogleBooksResponse.BookItem preview = googleBookService.searchByISBN(isbn)
-                .items()
-                .getFirst();
-        log.debug("Book got from google api: {}", preview);
-        return bookMapper.toBookDto(preview);
+        return managementBookApiService.searchByISBN(isbn).orElseThrow(() ->
+                        new BookNotFoundInApiException("Book wasn't found by any of supported external book apis"));
     }
 }

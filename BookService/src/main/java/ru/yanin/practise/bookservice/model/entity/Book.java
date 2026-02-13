@@ -98,18 +98,6 @@ public class Book {
         }
     }
 
-    @PrePersist
-    @PreUpdate
-    private void validate() {
-        if (pages <= 0) {
-            throw new IllegalArgumentException("The number of pages must be positive");
-        }
-        if (averageRating.compareTo(BigDecimal.ZERO) < 0 ||
-                averageRating.compareTo(BigDecimal.valueOf(5)) > 0) {
-            throw new IllegalArgumentException("The rating must be from 0 to 5");
-        }
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

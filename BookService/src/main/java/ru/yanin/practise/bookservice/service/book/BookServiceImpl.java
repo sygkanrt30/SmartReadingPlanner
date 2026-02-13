@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.GoogleBooksResponse;
-import ru.yanin.practise.bookservice.model.entity.Author;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 import ru.yanin.practise.bookservice.repository.BookRepository;
 import ru.yanin.practise.bookservice.repository.UserBookRepository;
-import ru.yanin.practise.bookservice.service.author.AuthorService;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -23,22 +20,6 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final UserBookRepository userBookRepository;
-    private final AuthorService authorService;
-
-    @Override
-    public BookDto save(GoogleBooksResponse.BookItem bookItem, Long userId) {
-        var book = bookMapper.toBook(bookItem);
-        book = bookRepository.save(book);
-        for (String authorName : bookItem.volumeInfo().authors()) {
-
-            Author author = authorService.findByFullName(authorName)
-                    .orElseGet(() -> authorService.save(authorName));
-            book.getAuthors().add(author);
-        }
-        Book savedBook = bookRepository.save(book);
-        tieBookToUser(userId, savedBook.getId());
-        return bookMapper.toBookDto(savedBook);
-    }
 
     @Override
     public void tieBookToUser(Long userId, Long bookId) {
@@ -57,6 +38,13 @@ public class BookServiceImpl implements BookService {
         Book savedBook = bookRepository.save(bookMapper.toBook(bookDto));
         log.trace("Saved book: {}", savedBook);
         return savedBook;
+    }
+
+    @Override
+    public BookDto save(BookDto bookDto, Long userId) {
+        Book savedBook = save(bookDto);
+        tieBookToUser(userId, savedBook.getId());
+        return bookMapper.toBookDtoWithNewId(bookDto, savedBook.getId());
     }
 
     @Override

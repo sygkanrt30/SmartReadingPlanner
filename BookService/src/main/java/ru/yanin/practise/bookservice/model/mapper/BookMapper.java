@@ -2,15 +2,19 @@ package ru.yanin.practise.bookservice.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;
 import ru.yanin.practise.bookservice.model.dto.AuthorDto;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
 import ru.yanin.practise.bookservice.model.dto.GoogleBooksResponse;
+import ru.yanin.practise.bookservice.model.dto.OpenLibrarySearchResponse;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.shared.genre.Genre;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +22,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookMapper {
 
-    @Mapping(target = "isbn", expression = "java(bookItem.volumeInfo().getIsbn13())")
+    @Mapping(target = "isbn", expression = "java(bookItem.volumeInfo().getPreferredIsbn())")
     @Mapping(target = "title", source = "bookItem.volumeInfo.title")
     @Mapping(target = "pages", source = "bookItem.volumeInfo.pageCount")
     @Mapping(target = "publisher", source = "bookItem.volumeInfo.publisher")
@@ -40,7 +44,7 @@ public interface BookMapper {
         return Genre.NO_GENRE;
     }
 
-    default Set<AuthorDto> setStringToSetAuthorDto(Set<String> authors) {
+    default Set<AuthorDto> setStringToSetAuthorDto(Collection<String> authors) {
         return authors.stream()
                 .map(AuthorDto::new)
                 .collect(Collectors.toSet());
@@ -51,6 +55,9 @@ public interface BookMapper {
 
     @Mapping(target = "id", source = "bookDto.bookId")
     Book toBook(BookDto bookDto);
+
+    @Mapping(target = "bookId", source = "id")
+    BookDto toBookDtoWithNewId(BookDto bookDto, Long id);
 
     @Mapping(target = "isbn", expression = "java(bookItem.volumeInfo().getIsbn13())")
     @Mapping(target = "title", source = "bookItem.volumeInfo.title")
@@ -64,4 +71,49 @@ public interface BookMapper {
     @Mapping(target = "id", ignore = true)
     Book toBook(GoogleBooksResponse.BookItem bookItem);
 
+    @Mapping(target = "isbn", expression = "java(edition.getPreferredIsbn())")
+    @Mapping(target = "title", source = "work.title")
+    @Mapping(target = "pages", source = "edition.pages")
+    @Mapping(target = "publisher", source = "edition.publisher", qualifiedByName = "extractFirstPublisher")
+    @Mapping(target = "publishedDate", expression = "java(edition.getPublishedDateAsLocalDate())")
+    @Mapping(target = "language", source = "edition.language", qualifiedByName = "extractFirstLanguage")
+    @Mapping(target = "genre", expression = "java(getGenre(work.genres()))")
+    @Mapping(target = "description", source = "edition", qualifiedByName = "extractDescription")
+    @Mapping(target = "averageRating", constant = "null")
+    @Mapping(target = "imageLink", source = "edition.coverId", qualifiedByName = "buildImageLink")
+    @Mapping(target = "authors", expression = "java(setStringToSetAuthorDto(work.authorName()))")
+    BookDto toBookDto(OpenLibrarySearchResponse.OpenLibraryWork work,
+                      OpenLibrarySearchResponse.OpenLibraryEdition edition);
+
+    @Named("extractFirstPublisher")
+    default String extractFirstPublisher(List<String> publishers) {
+        if (publishers != null && !publishers.isEmpty()) {
+            return publishers.getFirst();
+        }
+        return null;
+    }
+
+    @Named("extractFirstLanguage")
+    default String extractFirstLanguage(List<String> languages) {
+        if (languages != null && !languages.isEmpty()) {
+            return languages.getFirst();
+        }
+        return null;
+    }
+
+    @Named("extractDescription")
+    default String extractDescription(OpenLibrarySearchResponse.OpenLibraryEdition edition) {
+        return switch (edition.description()) {
+            case String s -> s;
+            case Map<?, ?> m -> m.get("value") != null ? m.get("value").toString() : null;
+            default -> null;
+        };
+    }
+
+    @Named("buildImageLink")
+    default String buildImageLink(Integer coverId) {
+        return coverId != null
+                ? String.format("https://covers.openlibrary.org/b/id/%d-L.jpg", coverId)
+                : null;
+    }
 }
