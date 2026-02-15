@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yanin.practice.user_service.model.dto.rabbit.VerificationEvent;
+import ru.yanin.shared.message_broker.producer.Producer;
 
 @Service
 @RequiredArgsConstructor

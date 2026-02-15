@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yanin.practice.user_service.model.dto.rabbit.VerificationEvent;
 import ru.yanin.practice.user_service.service.email.verification.storage.CodeStorageService;
-import ru.yanin.practice.user_service.service.rabbitMq.Producer;
+import ru.yanin.shared.message_broker.producer.Producer;
 import ru.yanin.practice.user_service.service.user.user_credentials.UserCredentialService;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
