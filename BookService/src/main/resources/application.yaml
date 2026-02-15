@@ -42,7 +42,7 @@ spring:
         ttl: 43200
   rabbitmq:
     host: localhost
-    port: 5673
+    port: 5672
     username: admin
     password: admin123
     virtual-host: /

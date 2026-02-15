@@ -27,7 +27,7 @@ public class RabbitMqConfig {
     @Bean
     public Queue myQueue() {
         return QueueBuilder
-                .nonDurable(queueName)
+                .durable(queueName)
                 .ttl(ttl)
                 .build();
     }
