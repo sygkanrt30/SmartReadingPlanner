@@ -21,7 +21,6 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     private final CodeStorageService codeStorageService;
     private final Producer<VerificationEvent> producer;
 
-
     @Override
     public void sendCode(String email, Long userId) {
         boolean isBelongToSameUser = userService.checkUserIdAndEmailBelongToSameUser(email, userId);

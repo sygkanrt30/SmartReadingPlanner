@@ -28,9 +28,7 @@ class AuthController {
     private final Authenticator authenticator;
 
     @PostMapping("/reg")
-    public ResponseEntity<String> doReg(
-            HttpServletRequest request,
-            HttpServletResponse response,
+    public ResponseEntity<String> doReg(HttpServletRequest request, HttpServletResponse response,
             @RequestBody @Valid UserCoreForReg userCoreForReg) {
 
         userService.save(userCoreForReg);
@@ -42,9 +40,7 @@ class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
-            HttpServletRequest request,
-            HttpServletResponse response,
+    public ResponseEntity<String> login(HttpServletRequest request, HttpServletResponse response,
             @RequestBody @Valid UserCredentialsForAuth userCredentials) {
 
         log.info("Login attempt for user: {}", userCredentials.username());

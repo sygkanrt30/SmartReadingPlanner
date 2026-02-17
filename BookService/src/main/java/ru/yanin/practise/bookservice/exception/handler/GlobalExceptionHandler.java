@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.yanin.shared.exception.ParentException;
+import ru.yanin.shared.exception.SmartReadingPlannerException;
 import ru.yanin.shared.exception.PropertyName;
 
 import java.time.Instant;
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ProblemDetail catchCustomException(ParentException e) {
+    public ProblemDetail catchCustomException(SmartReadingPlannerException e) {
         return getAppErrorHandlerResponseDto(e, e.responseStatus());
     }
 

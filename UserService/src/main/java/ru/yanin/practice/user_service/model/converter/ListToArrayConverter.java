@@ -9,6 +9,7 @@ import java.util.Set;
 @Component
 @WritingConverter
 public class ListToArrayConverter implements Converter<Set<String>, String[]> {
+
     @Override
     public String[] convert(Set<String> source) {
         return source.toArray(new String[0]);

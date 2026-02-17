@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.yanin.practice.apigateway.exception.ExtractTokenException;
 import ru.yanin.shared.exception.PropertyName;
+import ru.yanin.shared.exception.SmartReadingPlannerException;
 
 import java.time.Instant;
 
@@ -15,13 +15,8 @@ import java.time.Instant;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ProblemDetail catchNullPointerException(NullPointerException e) {
-        return getAppErrorHandlerResponseDto(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler
-    public ProblemDetail catchExtractTokenException(ExtractTokenException e) {
-        return getAppErrorHandlerResponseDto(e, HttpStatus.BAD_REQUEST);
+    public ProblemDetail catchSmartReadingPlannerException(SmartReadingPlannerException e) {
+        return getAppErrorHandlerResponseDto(e, e.responseStatus());
     }
 
     private ProblemDetail getAppErrorHandlerResponseDto(Exception e, HttpStatus status) {

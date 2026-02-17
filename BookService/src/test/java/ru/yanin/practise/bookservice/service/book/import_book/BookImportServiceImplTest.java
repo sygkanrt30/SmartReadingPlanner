@@ -16,7 +16,7 @@ import ru.yanin.practise.bookservice.model.mapper.ReadingPlanCalculationEventMap
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
 import ru.yanin.practise.bookservice.service.book.external_book_api.BookApiService;
-import ru.yanin.practise.bookservice.service.message_broker.rabbitMq.Producer;
+import ru.yanin.shared.message_broker.producer.Producer;
 import ru.yanin.shared.genre.Genre;
 
 import java.util.Optional;

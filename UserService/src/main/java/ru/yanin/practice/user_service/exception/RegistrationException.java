@@ -1,10 +1,10 @@
 package ru.yanin.practice.user_service.exception;
 
 import org.springframework.http.HttpStatus;
-import ru.yanin.shared.exception.ParentException;
+import ru.yanin.shared.exception.SmartReadingPlannerException;
 
 
-public class RegistrationException extends ParentException {
+public class RegistrationException extends SmartReadingPlannerException {
     public RegistrationException(String message, Throwable cause) {
         super(message, cause, HttpStatus.INTERNAL_SERVER_ERROR);
     }

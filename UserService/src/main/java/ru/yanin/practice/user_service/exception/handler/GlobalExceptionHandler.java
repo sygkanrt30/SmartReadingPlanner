@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
-import ru.yanin.shared.exception.ParentException;
+import ru.yanin.shared.exception.SmartReadingPlannerException;
 import ru.yanin.shared.exception.PropertyName;
 
 import java.time.Instant;
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ProblemDetail catchCustomException(ParentException e) {
+    public ProblemDetail catchCustomException(SmartReadingPlannerException e) {
         return getAppErrorHandlerResponseDto(e, e.responseStatus());
     }
 

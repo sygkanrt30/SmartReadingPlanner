@@ -6,16 +6,16 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @Accessors(fluent = true)
-public class ParentException extends RuntimeException {
+public class SmartReadingPlannerException extends RuntimeException {
 
     private final HttpStatus responseStatus;
 
-    protected ParentException(String message, Throwable cause, HttpStatus responseStatus) {
+    protected SmartReadingPlannerException(String message, Throwable cause, HttpStatus responseStatus) {
         super(message, cause);
         this.responseStatus = responseStatus;
     }
 
-    protected ParentException(String message, HttpStatus responseStatus) {
+    protected SmartReadingPlannerException(String message, HttpStatus responseStatus) {
         super(message);
         this.responseStatus = responseStatus;
     }
