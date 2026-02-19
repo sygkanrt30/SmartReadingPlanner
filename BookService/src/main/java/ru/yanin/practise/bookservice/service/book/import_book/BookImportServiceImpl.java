@@ -13,6 +13,7 @@ import ru.yanin.practise.bookservice.model.mapper.ReadingPlanCalculationEventMap
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
 import ru.yanin.practise.bookservice.service.book.external_book_api.BookApiService;
+import ru.yanin.practise.bookservice.service.book.user_book.UserBookService;
 import ru.yanin.shared.message_broker.producer.Producer;
 
 import java.util.Optional;
@@ -23,12 +24,13 @@ import java.util.function.Function;
 @Slf4j
 public class BookImportServiceImpl implements BookImportService {
 
-    private final BookMapper bookMapper;
     private final @Qualifier("readingPlanCalculationEventMapper") ReadingPlanCalculationEventMapper eventMapper;
-    private final BookService bookService;
-    private final Producer<ReadingPlanCalculationEvent> eventProducer;
     private final @Qualifier("managementBookApiService") BookApiService managementBookApiService;
+    private final Producer<ReadingPlanCalculationEvent> eventProducer;
     private final CacheService<String, BookDto> cacheService;
+    private final UserBookService userBookService;
+    private final BookService bookService;
+    private final BookMapper bookMapper;
 
     @Override
     public BookDto importBookByTitle(String title, Long userId) {
@@ -66,7 +68,7 @@ public class BookImportServiceImpl implements BookImportService {
             case true -> {
                 var book = optionalBook.get();
                 log.debug("Book with id {} found in storages", book.bookId());
-                bookService.tieBookToUser(userId, book.bookId());
+                userBookService.tieBookToUser(userId, book.bookId());
                 yield book;
             }
             case false -> importIfBookNotInStorages(identParam, userId, getBookFromApi);

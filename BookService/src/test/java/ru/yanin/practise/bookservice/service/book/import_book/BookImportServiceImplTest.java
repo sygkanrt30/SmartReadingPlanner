@@ -16,8 +16,9 @@ import ru.yanin.practise.bookservice.model.mapper.ReadingPlanCalculationEventMap
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
 import ru.yanin.practise.bookservice.service.book.external_book_api.BookApiService;
-import ru.yanin.shared.message_broker.producer.Producer;
+import ru.yanin.practise.bookservice.service.book.user_book.UserBookService;
 import ru.yanin.shared.genre.Genre;
+import ru.yanin.shared.message_broker.producer.Producer;
 
 import java.util.Optional;
 
@@ -35,6 +36,9 @@ class BookImportServiceImplTest {
     private BookService bookService;
 
     @Mock
+    private UserBookService userBookService;
+
+    @Mock
     private BookApiService managementBookApiService;
 
     @Mock
@@ -46,12 +50,13 @@ class BookImportServiceImplTest {
     void setUp() {
         bookMapper = new BookMapperImpl();
         bookImportService = new BookImportServiceImpl(
-                bookMapper,
                 mock(ReadingPlanCalculationEventMapper.class),
-                bookService,
-                mock(Producer.class),
                 managementBookApiService,
-                cacheService);
+                mock(Producer.class),
+                cacheService,
+                userBookService,
+                bookService,
+                bookMapper);
     }
 
     @Test
@@ -70,7 +75,7 @@ class BookImportServiceImplTest {
         assertSame(bookDto.pages(), result.pages());
         verify(cacheService).cache(eq(isbn), any());
         verify(cacheService, never()).get(eq(isbn));
-        verify(bookService).tieBookToUser(eq(userId), eq(bookDto.bookId()));
+        verify(userBookService).tieBookToUser(eq(userId), eq(bookDto.bookId()));
     }
 
     @Test
@@ -89,7 +94,7 @@ class BookImportServiceImplTest {
         assertSame(bookDto.pages(), result.pages());
         verify(cacheService, never()).cache(eq(isbn), any());
         verify(bookService).save(eq(bookDto));
-        verify(bookService).tieBookToUser(eq(userId), eq(bookDto.bookId()));
+        verify(userBookService).tieBookToUser(eq(userId), eq(bookDto.bookId()));
     }
 
     @Test
@@ -105,7 +110,7 @@ class BookImportServiceImplTest {
 
         assertThrows(RuntimeException.class, () -> bookImportService.importBookByIsbn(isbn, userId));
         verify(cacheService, never()).cache(eq(isbn), any());
-        verify(bookService, never()).tieBookToUser(eq(userId), eq(bookDto.bookId()));
+        verify(userBookService, never()).tieBookToUser(eq(userId), eq(bookDto.bookId()));
     }
 
     @Test

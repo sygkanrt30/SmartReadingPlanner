@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public interface BookService {
 
-    void tieBookToUser(Long userId, Long bookId);
-
     Book save(BookDto bookDto);
 
     BookDto save(BookDto bookDto, Long userId);
