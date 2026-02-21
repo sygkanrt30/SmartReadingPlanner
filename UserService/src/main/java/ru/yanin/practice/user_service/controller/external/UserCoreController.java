@@ -11,7 +11,7 @@ import ru.yanin.practice.user_service.service.user.core.UserCoreService;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/api/v1/users/user-core")
+@RequestMapping("${spring.application.base-url}/user-core")
 class UserCoreController {
 
     private final UserCoreService userCoreService;

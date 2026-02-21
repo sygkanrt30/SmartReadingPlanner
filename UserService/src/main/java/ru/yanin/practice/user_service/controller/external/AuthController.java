@@ -18,7 +18,7 @@ import ru.yanin.practice.user_service.service.user.UserSavingService;
 
 
 @RestController
-@RequestMapping("/api/v1/users/auth")
+@RequestMapping("${spring.application.base-url}/auth")
 @RequiredArgsConstructor
 @Validated
 @Slf4j

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yanin.practice.user_service.service.email.verification.EmailVerificationService;
 
 @RestController
-@RequestMapping("/api/v1/users/email")
+@RequestMapping("${spring.application.base-url}/email")
 @RequiredArgsConstructor
 class EmailVerificationController {
 

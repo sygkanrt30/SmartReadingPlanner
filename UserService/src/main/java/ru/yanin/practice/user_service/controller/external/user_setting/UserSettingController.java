@@ -7,7 +7,7 @@ import ru.yanin.practice.user_service.service.user.user_settings.UserSettingsSer
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users/user-setting")
+@RequestMapping("${spring.application.base-url}/user-setting")
 class UserSettingController {
 
     private final UserSettingsService userSettingsService;

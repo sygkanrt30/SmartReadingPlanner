@@ -1,6 +1,7 @@
 spring:
   application:
     name: UserService
+    base-url: /api/v1/users
   datasource:
     url: jdbc:postgresql://localhost:5436/main_db
     username: postgres

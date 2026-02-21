@@ -9,7 +9,7 @@ import ru.yanin.practise.bookservice.service.book.import_book.BookImportService;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/v1/books/import")
+@RequestMapping("${spring.application.base-url}/import")
 @RequiredArgsConstructor
 public class BookImportController {
 
