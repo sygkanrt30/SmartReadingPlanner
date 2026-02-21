@@ -15,7 +15,7 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users/reading-profile")
+@RequestMapping("${spring.application.base-url}/reading-profile")
 @Validated
 class ReadingProfileController {
 

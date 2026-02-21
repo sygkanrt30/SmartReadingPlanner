@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 import ru.yanin.shared.genre.Genre;
+import ru.yanin.shared.language.Language;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,7 +45,8 @@ public class Book {
     private LocalDate publishedDate;
 
     @Column(length = 50)
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)

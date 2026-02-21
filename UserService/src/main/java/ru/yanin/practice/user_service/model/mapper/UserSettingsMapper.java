@@ -11,6 +11,6 @@ import ru.yanin.practice.user_service.model.dto.request.auth.UserCoreForReg;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserSettingsMapper {
 
-    @Mapping(target = "lang", constant = "ENGLISH")
+    @Mapping(target = "lang", constant = "en")
     UserSetting toUserSetting(UserCoreForReg userCoreForReg, Long userId);
 }
