@@ -22,6 +22,9 @@ public class ResilienceConfig {
     @Value("${open-library.search.retry-name}")
     private String openLibraryRetryName;
 
+    @Value("${user-service.api.retry-name}")
+    private String userServiceRetryName;
+
     @Bean
     public RetryRegistry retryRegistry() {
         var googleConfig = RetryConfig.custom()
@@ -38,8 +41,16 @@ public class ResilienceConfig {
                         e instanceof ResourceAccessException || e instanceof HttpStatusCodeException)
                 .build();
 
+        var userServiceConfig = RetryConfig.custom()
+                .maxAttempts(2)
+                .waitDuration(Duration.ofMillis(300))
+                .retryOnException(e ->
+                        e instanceof ResourceAccessException || e instanceof HttpStatusCodeException)
+                .build();
+
         var registry = RetryRegistry.of(googleConfig);
         registry.addConfiguration(openLibraryRetryName, openLibraryConfig);
+        registry.addConfiguration(userServiceRetryName, userServiceConfig);
         return registry;
     }
 
@@ -51,6 +62,11 @@ public class ResilienceConfig {
     @Bean
     public Retry openLibraryRetry(RetryRegistry registry) {
         return registry.retry(openLibraryRetryName);
+    }
+
+    @Bean
+    public Retry userServiceRetry(RetryRegistry registry) {
+        return registry.retry(userServiceRetryName);
     }
 
     @Bean
