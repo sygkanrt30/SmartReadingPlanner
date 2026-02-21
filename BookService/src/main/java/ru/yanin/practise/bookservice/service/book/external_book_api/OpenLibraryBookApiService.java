@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriBuilder;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.OpenLibrarySearchResponse;
+import ru.yanin.practise.bookservice.model.dto.api_response.OpenLibrarySearchResponse;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 
-import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -53,18 +51,14 @@ class OpenLibraryBookApiService implements BookApiService {
 
     private OpenLibrarySearchResponse executeSearch(String queryValue) {
         return restClient.get()
-                .uri(uriBuilder -> createUriWithQueryParams(uriBuilder, queryValue))
+                .uri(uriBuilder -> uriBuilder.queryParam("q", queryValue)
+                        .queryParam("fields", "*")
+                        .queryParam("editions", "true")
+                        .queryParam("editions.fields", editionsFields)
+                        .queryParam("limit", "1")
+                        .build())
                 .retrieve()
                 .body(OpenLibrarySearchResponse.class);
-    }
-
-    private URI createUriWithQueryParams(UriBuilder uriBuilder, String queryValue) {
-        return uriBuilder.queryParam("q", queryValue)
-                .queryParam("fields", "*")
-                .queryParam("editions", "true")
-                .queryParam("editions.fields", editionsFields)
-                .queryParam("limit", "1")
-                .build();
     }
 
     private @NonNull Optional<BookDto> getAndMap2DtoIfResponseNotEmpty(OpenLibrarySearchResponse response,

@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriBuilder;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.GoogleBooksResponse;
+import ru.yanin.practise.bookservice.model.dto.api_response.GoogleBooksResponse;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 
-import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -46,7 +44,13 @@ class GoogleBookApiService implements BookApiService {
         return getBookDtoFromResponse("isbn:", isbn);
     }
 
+    private GoogleBooksResponse fallback(String isbn, Exception e) {
+        log.warn("Fallback triggered for ISBN: {}, error: {}", isbn, e.getMessage());
+        return null;
+    }
+
     @Override
+    @Retry(name = "${google.books.retry-name}", fallbackMethod = "fallback")
     public Optional<BookDto> searchByTitle(String title) {
         log.debug("find book by google book api");
         return getBookDtoFromResponse("intitle:", title);
@@ -54,8 +58,11 @@ class GoogleBookApiService implements BookApiService {
 
     private @NonNull Optional<BookDto> getBookDtoFromResponse(String x, String titleOrIsbn) {
         GoogleBooksResponse response = restClient.get()
-                .uri(uriBuilder ->
-                        createUriWithQueryParams(uriBuilder, x + titleOrIsbn))
+                .uri(uriBuilder -> uriBuilder.queryParam("q", x + titleOrIsbn)
+                        .queryParam("key", apiKey)
+                        .queryParam("fields", fieldSet)
+                        .queryParam("maxResults", 1)
+                        .build())
                 .retrieve()
                 .body(GoogleBooksResponse.class);
         if (Objects.isNull(response) || response.items().isEmpty()) {
@@ -64,18 +71,5 @@ class GoogleBookApiService implements BookApiService {
         }
         GoogleBooksResponse.BookItem bookItem = response.items().getFirst();
         return Optional.of(bookMapper.toBookDto(bookItem));
-    }
-
-    private GoogleBooksResponse fallback(String isbn, Exception e) {
-        log.warn("Fallback triggered for ISBN: {}, error: {}", isbn, e.getMessage());
-        return null;
-    }
-
-    private URI createUriWithQueryParams(UriBuilder uriBuilder, String queryValue) {
-        return uriBuilder.queryParam("q", queryValue)
-                .queryParam("key", apiKey)
-                .queryParam("fields", fieldSet)
-                .queryParam("maxResults", 1)
-                .build();
     }
 }

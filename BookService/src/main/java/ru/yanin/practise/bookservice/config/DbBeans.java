@@ -18,7 +18,7 @@ public class DbBeans {
         var insert = new SimpleJdbcInsert(jdbcTemplate)
                 .withSchemaName(schemaName)
                 .withTableName(tableName)
-                .usingColumns("user_id", "book_id")
+                .usingColumns("user_id", "book_id", "isbn")
                 .usingGeneratedKeyColumns("created_at");
         insert.compile();
         return insert;

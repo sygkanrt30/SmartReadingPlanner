@@ -14,7 +14,7 @@ import java.time.Instant;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class})
+    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class})
     public ProblemDetail catchInternalServerError(Exception e) {
         return getAppErrorHandlerResponseDto(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }

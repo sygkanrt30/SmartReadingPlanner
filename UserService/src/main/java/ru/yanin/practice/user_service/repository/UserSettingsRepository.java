@@ -6,6 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.yanin.practice.user_service.model.entity.UserSetting;
 
+import java.util.Optional;
+
 @Repository
 public interface UserSettingsRepository extends CrudRepository<UserSetting, Long> {
 
@@ -24,4 +26,6 @@ public interface UserSettingsRepository extends CrudRepository<UserSetting, Long
     @Modifying
     @Query("UPDATE user_settings SET weekly_report = :isNeedWeeklyReport WHERE user_id = :userId")
     void updateStatusWeeklyReport(Long userId, boolean isNeedWeeklyReport);
+
+    Optional<UserSetting> findByUserId(Long userId);
 }

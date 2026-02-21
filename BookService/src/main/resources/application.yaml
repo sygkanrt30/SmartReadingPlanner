@@ -1,6 +1,7 @@
 spring:
   application:
     name: BookService
+    base-url: /api/v1/books
   datasource:
     url: jdbc:postgresql://localhost:5436/main_db
     username: postgres
@@ -78,6 +79,11 @@ open-library:
     editions-fields: "key,title,subtitle,publishers,publish_date,number_of_pages,isbn_13,isbn_10,lccn,oclc,
     language,ebook_access,ia,cover_i,physical_format,by_statement,description"
     retry-name: openlibraryRetry
+
+user-service:
+  api:
+    internal:
+      base-url: http://localhost:8080/api/v1/users/internal
 
 server:
   forward-headers-strategy: framework

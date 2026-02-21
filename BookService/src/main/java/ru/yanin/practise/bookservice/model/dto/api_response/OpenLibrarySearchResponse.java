@@ -1,4 +1,4 @@
-package ru.yanin.practise.bookservice.model.dto;
+package ru.yanin.practise.bookservice.model.dto.api_response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

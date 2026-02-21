@@ -1,13 +1,18 @@
 package ru.yanin.practise.bookservice.controller.external;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yanin.practise.bookservice.model.dto.BookDto;
+import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;
 import ru.yanin.practise.bookservice.service.book.user_book.UserBookService;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/books")
+@RequestMapping("${spring.application.base-url}")
 public class UserBookController {
 
     private final UserBookService userBookService;
@@ -18,5 +23,31 @@ public class UserBookController {
 
         userBookService.removeBookFromUser(userId, bookId);
         return ResponseEntity.ok("Book has been removed successfully");
+    }
+
+    @GetMapping("/all/for-user")
+    public ResponseEntity<?> getAllImportsToUser(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @RequestHeader("X-User-ID") Long userId) {
+
+        var dtos = userBookService.findAllWithPagination(userId, page, size);
+        return getResponse(dtos);
+    }
+
+    private @NonNull ResponseEntity<?> getResponse(List<BookDto> dtos) {
+        if (dtos.isEmpty()){
+            return ResponseEntity.ok("User haven't been add books or user have been removed all books");
+        }
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/all-with-sort/for-user")
+    public ResponseEntity<?> getAllImportsToUser(
+            @RequestBody SortAndPaginationRequest sortRequest,
+            @RequestHeader("X-User-ID") Long userId) {
+
+        var dtos = userBookService.findAllWithPaginationAndSort(userId, sortRequest);
+        return getResponse(dtos);
     }
 }

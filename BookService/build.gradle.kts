@@ -13,6 +13,7 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
     implementation("io.github.resilience4j:resilience4j-spring-boot3:${property("resilience4jVersion")}") {
         exclude(group = "io.github.resilience4j", module = "resilience4j-rxjava3")

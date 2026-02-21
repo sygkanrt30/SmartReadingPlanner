@@ -68,7 +68,7 @@ public class BookImportServiceImpl implements BookImportService {
             case true -> {
                 var book = optionalBook.get();
                 log.debug("Book with id {} found in storages", book.bookId());
-                userBookService.tieBookToUser(userId, book.bookId());
+                userBookService.tieBookToUser(userId, book.bookId(), book.isbn());
                 yield book;
             }
             case false -> importIfBookNotInStorages(identParam, userId, getBookFromApi);

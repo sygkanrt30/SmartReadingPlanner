@@ -7,8 +7,8 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;
 import ru.yanin.practise.bookservice.model.dto.AuthorDto;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.GoogleBooksResponse;
-import ru.yanin.practise.bookservice.model.dto.OpenLibrarySearchResponse;
+import ru.yanin.practise.bookservice.model.dto.api_response.GoogleBooksResponse;
+import ru.yanin.practise.bookservice.model.dto.api_response.OpenLibrarySearchResponse;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.shared.genre.Genre;
 
@@ -58,18 +58,6 @@ public interface BookMapper {
 
     @Mapping(target = "bookId", source = "id")
     BookDto toBookDtoWithNewId(BookDto bookDto, Long id);
-
-    @Mapping(target = "isbn", expression = "java(bookItem.volumeInfo().getIsbn13())")
-    @Mapping(target = "title", source = "bookItem.volumeInfo.title")
-    @Mapping(target = "pages", source = "bookItem.volumeInfo.pageCount")
-    @Mapping(target = "publisher", source = "bookItem.volumeInfo.publisher")
-    @Mapping(target = "publishedDate", expression = "java(bookItem.volumeInfo().getPublishedDateAsLocalDate())")
-    @Mapping(target = "language", source = "bookItem.volumeInfo.language")
-    @Mapping(target = "description", source = "bookItem.volumeInfo.description")
-    @Mapping(target = "imageLink", source = "bookItem.volumeInfo.imageLinks.thumbnail")
-    @Mapping(target = "genre", expression = "java(getGenre(bookItem.volumeInfo().categories()))")
-    @Mapping(target = "id", ignore = true)
-    Book toBook(GoogleBooksResponse.BookItem bookItem);
 
     @Mapping(target = "isbn", expression = "java(edition.getPreferredIsbn())")
     @Mapping(target = "title", source = "work.title")

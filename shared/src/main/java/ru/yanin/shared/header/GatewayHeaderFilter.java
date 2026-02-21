@@ -43,7 +43,6 @@ public class GatewayHeaderFilter extends OncePerRequestFilter {
             response.getWriter().write("Access denied: Missing or invalid " + PROCESSED.value() + " header");
             return;
         }
-
         filterChain.doFilter(request, response);
     }
 
