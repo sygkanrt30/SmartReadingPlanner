@@ -1,7 +1,7 @@
 spring:
   application:
     name: BookService
-    base-url: /api/v1/books
+    base-url: /api/v1/books/user
   datasource:
     url: jdbc:postgresql://localhost:5436/main_db
     username: postgres
@@ -28,8 +28,9 @@ spring:
   data:
     redis:
       host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6372}
+      port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:redispass123}
+      database: 1
       timeout: 10s
       connect-timeout: 10s
       lettuce:
