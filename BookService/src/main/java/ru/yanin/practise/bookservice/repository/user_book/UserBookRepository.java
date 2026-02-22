@@ -19,7 +19,7 @@ public interface UserBookRepository {
      * @return the number of rows affected
      * @throws DataAccessException if there is any problem issuing the remove
      */
-    int deleteBookFromUser(Long userId, Long bookId) throws DataAccessException;
+    int deleteBooksFromUser(Long userId, Long... bookId) throws DataAccessException;
 
     List<String> findAllISBNByUserIdWithPagination(Long userId, int page, int size);
 

@@ -22,7 +22,7 @@ public class UserBookRepositoryImpl implements UserBookRepository {
     private static final String COUNT_BY_USER_AND_BOOK_IDS_QUERY =
             "SELECT COUNT(*) FROM users_books WHERE user_id = :userId AND book_id = :bookId";
     private static final String DELETE_BOOK_FROM_USER_QUERY =
-            "DELETE FROM users_books WHERE user_id = :userId and book_id = :bookId";
+            "DELETE FROM users_books WHERE user_id = :userId AND book_id IN :bookIds";
     private static final String SELECT_BY_USER_ID_WITH_PAGINATION_QUERY =
             "SELECT isbn FROM users_books WHERE user_id = :userId ORDER BY book_id LIMIT :limit OFFSET :offset";
     private static final String SELECT_BY_USER_ID_WITH_SORT_QUERY_SAMPLE =
@@ -52,19 +52,17 @@ public class UserBookRepositoryImpl implements UserBookRepository {
 
     @Override
     public Long countRowByUserAndBookId(Long userId, Long bookId) {
-        var params = getUserBookIdsSqlParamSource(userId, bookId);
+        var params = new MapSqlParameterSource()
+                .addValue("userId", userId)
+                .addValue("bookId", bookId);
         return namedParameterJdbcTemplate.queryForObject(COUNT_BY_USER_AND_BOOK_IDS_QUERY, params, Long.class);
     }
 
-    private @NonNull MapSqlParameterSource getUserBookIdsSqlParamSource(Long userId, Long bookId) {
-        return new MapSqlParameterSource()
-                .addValue("userId", userId)
-                .addValue("bookId", bookId);
-    }
-
     @Override
-    public int deleteBookFromUser(Long userId, Long bookId) throws DataAccessException {
-        var params = getUserBookIdsSqlParamSource(userId, bookId);
+    public int deleteBooksFromUser(Long userId, Long... bookIds) throws DataAccessException {
+        var params = new MapSqlParameterSource()
+                .addValue("userId", userId)
+                .addValue("bookIds", bookIds);
         return namedParameterJdbcTemplate.update(DELETE_BOOK_FROM_USER_QUERY, params);
     }
 

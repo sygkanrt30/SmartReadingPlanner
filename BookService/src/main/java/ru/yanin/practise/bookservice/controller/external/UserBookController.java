@@ -10,6 +10,7 @@ import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationReq
 import ru.yanin.practise.bookservice.service.book.user_book.UserBookService;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,10 +20,14 @@ public class UserBookController {
     private final UserBookService userBookService;
 
     @DeleteMapping
-    public ResponseEntity<?> removeFromUser(@RequestParam("book_id") Long bookId,
+    public ResponseEntity<?> removeFromUser(@RequestBody Long[] bookIds,
                                             @RequestHeader("X-User-ID") Long userId) {
 
-        userBookService.removeBookFromUser(userId, bookId);
+        if (Objects.isNull(bookIds) || bookIds.length == 0){
+            return ResponseEntity.accepted()
+                    .body("The id array to be deleted isn't passed or is empty");
+        }
+        userBookService.removeBooksFromUser(userId, bookIds);
         return ResponseEntity.ok("Book has been removed successfully");
     }
 

@@ -38,14 +38,14 @@ public class UserBookServiceImpl implements UserBookService {
     }
 
     @Override
-    public void removeBookFromUser(Long userId, Long bookId) {
+    public void removeBooksFromUser(Long userId, Long... bookIds) {
         try {
-            int numberOfAffectedRows = userBookRepository.deleteBookFromUser(userId, bookId);
+            int numberOfAffectedRows = userBookRepository.deleteBooksFromUser(userId, bookIds);
             if (numberOfAffectedRows == 0) {
-                log.warn("Such a pair of userId({}) and bookId({}) doesn't exist in db", userId, bookId);
+                log.warn("Such a pair of userId({}) and bookId({}) doesn't exist in db", userId, bookIds);
                 return;
             }
-            log.debug("Removed book with id {} from user with id {}", bookId, userId);
+            log.debug("Removed book with id {} from user with id {}", bookIds, userId);
         } catch (DataAccessException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
