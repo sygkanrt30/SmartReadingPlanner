@@ -1,7 +1,6 @@
 package ru.yanin.shared.language;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.Getter;
 
 public enum Language {
     ENGLISH("en", "eng"),

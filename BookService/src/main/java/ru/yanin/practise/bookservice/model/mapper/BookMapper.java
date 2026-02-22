@@ -54,9 +54,6 @@ public interface BookMapper {
     @Mapping(target = "id", source = "bookDto.bookId")
     Book toBook(BookDto bookDto);
 
-    @Mapping(target = "bookId", source = "id")
-    BookDto toBookDtoWithNewId(BookDto bookDto, Long id);
-
     @Mapping(target = "isbn", expression = "java(edition.getPreferredIsbn())")
     @Mapping(target = "title", source = "work.title")
     @Mapping(target = "pages", source = "edition.pages")
