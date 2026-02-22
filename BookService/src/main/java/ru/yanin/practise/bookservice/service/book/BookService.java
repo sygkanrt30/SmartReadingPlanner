@@ -8,9 +8,7 @@ import java.util.Optional;
 
 public interface BookService {
 
-    Book save(BookDto bookDto);
-
-    BookDto save(BookDto bookDto, Long userId);
+    BookDto save(BookDto bookDto);
 
     Optional<Book> findByIsbn(String isbn);
 

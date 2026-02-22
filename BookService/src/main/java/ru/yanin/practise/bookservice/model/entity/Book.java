@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.proxy.HibernateProxy;
+import ru.yanin.practise.bookservice.model.converter.LanguageConverter;
 import ru.yanin.shared.genre.Genre;
 import ru.yanin.shared.language.Language;
 
@@ -45,7 +46,7 @@ public class Book {
     private LocalDate publishedDate;
 
     @Column(length = 50)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = LanguageConverter.class)
     private Language language;
 
     @Enumerated(EnumType.STRING)

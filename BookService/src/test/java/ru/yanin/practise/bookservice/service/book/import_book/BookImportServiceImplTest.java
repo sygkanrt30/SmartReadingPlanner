@@ -125,7 +125,7 @@ class BookImportServiceImplTest {
         when(bookService.findByIsbn(isbn)).thenReturn(Optional.empty());
         when(cacheService.get(isbn)).thenReturn(Optional.empty());
         when(managementBookApiService.searchByISBN(isbn)).thenReturn(Optional.of(bookDto));
-        when(bookService.save(bookDto, userId)).thenReturn(bookDto);
+        when(bookService.save(bookDto)).thenReturn(bookDto);
 
         BookDto result = bookImportService.importBookByIsbn(isbn, userId);
 
@@ -144,7 +144,7 @@ class BookImportServiceImplTest {
         when(bookService.findByIsbn(isbn)).thenReturn(Optional.empty());
         when(cacheService.get(isbn)).thenReturn(Optional.empty());
         when(managementBookApiService.searchByISBN(isbn)).thenReturn(Optional.of(bookDto));
-        when(bookService.save(bookDto, userId)).thenThrow(RuntimeException.class);
+        when(bookService.save(bookDto)).thenThrow(RuntimeException.class);
 
         assertThrows(RuntimeException.class, () -> bookImportService.importBookByIsbn(isbn, userId));
         verify(cacheService, never()).cache(eq(isbn), any());

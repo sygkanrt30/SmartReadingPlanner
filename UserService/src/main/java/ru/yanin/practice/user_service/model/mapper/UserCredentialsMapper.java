@@ -5,11 +5,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
-import ru.yanin.practice.user_service.model.entity.UserCredentials;
 import ru.yanin.practice.user_service.model.dto.request.auth.UserCredentialsForReg;
+import ru.yanin.practice.user_service.model.entity.UserCredentials;
 
-@Component
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserCredentialsMapper {
 

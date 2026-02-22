@@ -24,7 +24,7 @@ import java.util.function.Function;
 @Slf4j
 public class BookImportServiceImpl implements BookImportService {
 
-    private final @Qualifier("readingPlanCalculationEventMapper") ReadingPlanCalculationEventMapper eventMapper;
+    private final @Qualifier("readingPlanCalculationEventMapperImpl") ReadingPlanCalculationEventMapper eventMapper;
     private final @Qualifier("managementBookApiService") BookApiService managementBookApiService;
     private final Producer<ReadingPlanCalculationEvent> eventProducer;
     private final CacheService<String, BookDto> cacheService;
@@ -83,7 +83,8 @@ public class BookImportServiceImpl implements BookImportService {
         if (dtoOptional.isEmpty()) {
             throw new BookNotFoundInApiException("Book wasn't found by any of supported external book apis");
         }
-        BookDto bookDto = bookService.save(dtoOptional.get(), userId);
+        BookDto bookDto = bookService.save(dtoOptional.get());
+        userBookService.tieBookToUser(userId, bookDto.bookId(), bookDto.isbn());
         cacheService.cache(identParam, bookDto);
         log.debug("Book saved with id {} in db and in stores", bookDto.bookId());
         return bookDto;

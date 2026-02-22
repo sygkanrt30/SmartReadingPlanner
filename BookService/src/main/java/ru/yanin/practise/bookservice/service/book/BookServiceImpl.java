@@ -8,7 +8,6 @@ import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 import ru.yanin.practise.bookservice.repository.BookRepository;
 import ru.yanin.practise.bookservice.service.book.cache.CacheService;
-import ru.yanin.practise.bookservice.service.book.user_book.UserBookService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +21,12 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final CacheService<String, BookDto> cacheService;
     private final BookMapper bookMapper;
-    private final UserBookService userBookService;
 
     @Override
-    public Book save(BookDto bookDto) {
+    public BookDto save(BookDto bookDto) {
         Book savedBook = bookRepository.save(bookMapper.toBook(bookDto));
         log.trace("Saved book: {}", savedBook);
-        return savedBook;
-    }
-
-    @Override
-    public BookDto save(BookDto bookDto, Long userId) {
-        Book savedBook = save(bookDto);
-        userBookService.tieBookToUser(userId, savedBook.getId(), savedBook.getIsbn());
-        return bookMapper.toBookDtoWithNewId(bookDto, savedBook.getId());
+        return bookMapper.toBookDto(savedBook);
     }
 
     @Override

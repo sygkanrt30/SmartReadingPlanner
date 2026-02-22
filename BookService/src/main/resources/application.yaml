@@ -1,7 +1,7 @@
 spring:
   application:
     name: BookService
-    base-url: /api/v1/books/user
+    base-url: /api/v1/books
   datasource:
     url: jdbc:postgresql://localhost:5436/main_db
     username: postgres

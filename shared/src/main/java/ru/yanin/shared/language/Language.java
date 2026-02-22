@@ -3,7 +3,6 @@ package ru.yanin.shared.language;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
-@Getter
 public enum Language {
     ENGLISH("en", "eng"),
     RUSSIAN("ru", "rus");
@@ -24,5 +23,9 @@ public enum Language {
             }
         }
         throw new IllegalArgumentException("Language not found: " + string);
+    }
+
+    public String getFirstReduction() {
+        return reductions[0];
     }
 }

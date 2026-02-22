@@ -43,7 +43,7 @@ services:
 
 
   rabbitmq_user_notification:
-    container_name: rabbitmq_for_user_notification_services
+    container_name: rabbitmq_user_notification_services
     image: rabbitmq:4.2-management
     restart: unless-stopped
     ports:

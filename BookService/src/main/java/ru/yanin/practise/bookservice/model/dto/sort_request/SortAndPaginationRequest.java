@@ -1,12 +1,18 @@
 package ru.yanin.practise.bookservice.model.dto.sort_request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
+
+import java.util.Objects;
 
 public record SortAndPaginationRequest(
         @NotEmpty FieldNameToSortBy fieldName,
-        @JsonProperty(defaultValue = "true") boolean isAscending,
-        @JsonProperty(defaultValue = "0") int page,
-        @JsonProperty(defaultValue = "15") int size
+        Boolean isAscending,
+        Integer page,
+        Integer size
 ) {
+    public SortAndPaginationRequest {
+        if (Objects.isNull(isAscending)) isAscending = true;
+        if (Objects.isNull(page)) page = 0;
+        if (Objects.isNull(size)) size = 15;
+    }
 }
