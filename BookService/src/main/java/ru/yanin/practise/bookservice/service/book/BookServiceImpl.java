@@ -49,7 +49,11 @@ public class BookServiceImpl implements BookService {
                 continue;
             }
             var bookOptional = bookRepository.findByIsbn(isbn);
-            bookOptional.ifPresent(book -> result.add(bookMapper.toBookDto(book)));
+            if (bookOptional.isPresent()) {
+                var bookDto = bookMapper.toBookDto(bookOptional.get());
+                result.add(bookDto);
+                cacheService.cache(bookDto.isbn(), bookDto);
+            }
         }
         if (result.size() != isbns.size()) {
             log.error("""
