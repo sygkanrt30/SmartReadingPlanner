@@ -2,11 +2,13 @@ package ru.yanin.practise.bookservice.repository.user_book;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import ru.yanin.practise.bookservice.model.dto.BookDto;
 import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;
 import ru.yanin.practise.bookservice.repository.UserBookRepository;
 import ru.yanin.shared.language.Language;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class UserBookRepositoryImpl implements UserBookRepository {
 
     private final SimpleJdbcInsert userBookJdbcInsert;
@@ -38,7 +41,9 @@ public class UserBookRepositoryImpl implements UserBookRepository {
         var params = new MapSqlParameterSource()
                 .addValue("userId", userId)
                 .addValue("bookId", bookId);
-        return namedParameterJdbcTemplate.queryForObject(SqlQueries.countByUserAndBookIdsQuery(), params, Long.class);
+        String query = SqlQueries.countByUserAndBookIdsQuery();
+        log.info(query);
+        return namedParameterJdbcTemplate.queryForObject(query, params, Long.class);
     }
 
     @Override
@@ -46,14 +51,17 @@ public class UserBookRepositoryImpl implements UserBookRepository {
         var params = new MapSqlParameterSource()
                 .addValue("userId", userId)
                 .addValue("bookIds", bookIds);
-        return namedParameterJdbcTemplate.update(SqlQueries.deleteBookFromUserQuery(), params);
+        String query = SqlQueries.deleteBookFromUserQuery();
+        log.info(query);
+        return namedParameterJdbcTemplate.update(query, params);
     }
 
     @Override
     public List<String> findAllISBNByUserIdWithPagination(Long userId, int page, int size) {
         var params = getUserIdPaginationSqlParamSource(userId, page, size);
-        return namedParameterJdbcTemplate.queryForList(
-                SqlQueries.selectUserBooksWithPaginationQuery(), params, String.class);
+        String query = SqlQueries.selectUserBooksWithPaginationQuery();
+        log.info(query);
+        return namedParameterJdbcTemplate.queryForList(query, params, String.class);
     }
 
     private @NonNull MapSqlParameterSource getUserIdPaginationSqlParamSource(Long userId, int page, int size) {
@@ -65,10 +73,11 @@ public class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     @Override
-    public List<String> findAllISBNByUserIdWithPaginationAndSort(Long userId, Language lang,
-                                                                 SortAndPaginationRequest sortRequest) {
+    public List<BookDto> findAllByUserIdWithPaginationAndSort(Long userId, Language lang,
+                                                              SortAndPaginationRequest sortRequest) {
         String sql = SortQueryBuilder.buildSortQuery(sortRequest.fieldName(), sortRequest.isAscending(), lang);
         var params = getUserIdPaginationSqlParamSource(userId, sortRequest.page(), sortRequest.size());
-        return namedParameterJdbcTemplate.queryForList(sql, params, String.class);
+        log.info(sql);
+        return namedParameterJdbcTemplate.queryForList(sql, params, BookDto.class);
     }
 }

@@ -1,6 +1,7 @@
 package ru.yanin.practise.bookservice.repository;
 
 import org.springframework.dao.DataAccessException;
+import ru.yanin.practise.bookservice.model.dto.BookDto;
 import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;
 import ru.yanin.shared.language.Language;
 
@@ -23,6 +24,6 @@ public interface UserBookRepository {
 
     List<String> findAllISBNByUserIdWithPagination(Long userId, int page, int size);
 
-    List<String> findAllISBNByUserIdWithPaginationAndSort(Long userId, Language lang,
-                                                          SortAndPaginationRequest sortRequest);
+    List<BookDto> findAllByUserIdWithPaginationAndSort(Long userId, Language lang,
+                                                       SortAndPaginationRequest sortRequest);
 }

@@ -64,12 +64,7 @@ public class UserBookServiceImpl implements UserBookService {
     @Override
     public List<BookDto> findAllWithPaginationAndSort(Long userId, SortAndPaginationRequest sortRequest) {
         Language lang = getLangIfFieldToSortByIsTitle(userId, sortRequest);
-        List<String> isbns = userBookRepository.findAllISBNByUserIdWithPaginationAndSort(userId, lang, sortRequest);
-        if (isbns.isEmpty()) {
-            log.warn("The user by id: {} has no added books", userId);
-            return Collections.emptyList();
-        }
-        return bookService.findAllByIsbnsWithCache(isbns);
+        return userBookRepository.findAllByUserIdWithPaginationAndSort(userId, lang, sortRequest);
     }
 
     @Nullable
