@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
 import ru.yanin.practise.bookservice.model.dto.sort_request.FieldNameToSortBy;
 import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;
-import ru.yanin.practise.bookservice.repository.user_book.UserBookRepository;
+import ru.yanin.practise.bookservice.repository.UserBookRepository;
 import ru.yanin.practise.bookservice.service.book.BookService;
 import ru.yanin.practise.bookservice.service.user_api.internal.InternalUserApiService;
 import ru.yanin.shared.language.Language;

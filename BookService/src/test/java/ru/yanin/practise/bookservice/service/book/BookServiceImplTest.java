@@ -51,6 +51,7 @@ class BookServiceImplTest {
             when(cacheService.get(isbns.get(i))).thenReturn(Optional.of(dtos.get(i)));
         }
         when(bookRepository.findByIsbn(isbns.get(1))).thenReturn(Optional.of(book));
+        when(bookMapper.toBookDto(book)).thenReturn(dtos.get(1));
 
         List<BookDto> result = bookServiceImpl.findAllByIsbnsWithCache(isbns);
 

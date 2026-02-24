@@ -1,4 +1,4 @@
-package ru.yanin.practise.bookservice.repository.user_book;
+package ru.yanin.practise.bookservice.repository;
 
 import org.springframework.dao.DataAccessException;
 import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;

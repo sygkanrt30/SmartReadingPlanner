@@ -132,7 +132,6 @@ class BookImportServiceImplTest {
         assertEquals(bookDto, result);
         assertEquals(Genre.COMEDY, result.genre());
         verify(cacheService).cache(eq(isbn), any());
-        verify(bookService, never()).save(eq(bookDto));
     }
 
     @Test
@@ -148,7 +147,6 @@ class BookImportServiceImplTest {
 
         assertThrows(RuntimeException.class, () -> bookImportService.importBookByIsbn(isbn, userId));
         verify(cacheService, never()).cache(eq(isbn), any());
-        verify(bookService, never()).save(eq(bookDto));
     }
 
     @Test

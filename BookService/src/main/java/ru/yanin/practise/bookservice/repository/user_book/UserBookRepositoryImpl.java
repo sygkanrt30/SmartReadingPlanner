@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;
+import ru.yanin.practise.bookservice.repository.UserBookRepository;
 import ru.yanin.shared.language.Language;
 
 import java.util.List;
