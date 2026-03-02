@@ -13,6 +13,7 @@ import ru.yanin.shared.token.Token;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +33,6 @@ public class RateLimitUtil {
         return config.getExcludedPaths().stream()
                 .anyMatch(path::matches);
     }
-
 
     /**
      * Проверка превышения лимита запросов
@@ -118,7 +118,7 @@ public class RateLimitUtil {
 
     public long getMaxRequests(ServerHttpRequest request) {
         Long result = getCustomPathSetting(request, config.getCustomLimits());
-        if (result != null) {
+        if (Objects.nonNull(result)) {
             return result;
         }
         return config.getDefaultMaxRequests();
@@ -136,7 +136,7 @@ public class RateLimitUtil {
 
     public long getWindowMillis(ServerHttpRequest request) {
         Long result = getCustomPathSetting(request, config.getCustomWindows());
-        if (result != null) {
+        if (Objects.nonNull(result)) {
             return result;
         }
         return config.getDefaultWindowMillis();

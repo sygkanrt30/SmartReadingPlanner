@@ -91,4 +91,8 @@ public class ReadingProfileServiceImpl implements ReadingProfileService {
         log.debug("Reading profile preferred genres set reduced successfully for user: {}", userId);
     }
 
+    @Override
+    public Set<Genre> getGenresById(Long userId) {
+        return findReadingProfileOrThrow(userId).preferredGenres();
+    }
 }
