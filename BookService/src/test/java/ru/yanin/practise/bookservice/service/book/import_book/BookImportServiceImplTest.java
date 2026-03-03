@@ -75,7 +75,7 @@ class BookImportServiceImplTest {
         assertSame(bookDto.pages(), result.pages());
         verify(cacheService).cache(eq(isbn), any());
         verify(cacheService, never()).get(eq(isbn));
-        verify(userBookService).tieBookToUser(eq(userId), eq(bookDto.bookId()), anyString());
+        verify(userBookService).tieBookToUser(eq(userId), eq(bookDto.bookId()));
     }
 
     @Test
@@ -94,7 +94,7 @@ class BookImportServiceImplTest {
         assertSame(bookDto.pages(), result.pages());
         verify(cacheService, never()).cache(eq(isbn), any());
         verify(bookService).save(eq(bookDto));
-        verify(userBookService).tieBookToUser(eq(userId), eq(bookDto.bookId()), anyString());
+        verify(userBookService).tieBookToUser(eq(userId), eq(bookDto.bookId()));
     }
 
     @Test
@@ -110,7 +110,7 @@ class BookImportServiceImplTest {
 
         assertThrows(RuntimeException.class, () -> bookImportService.importBookByIsbn(isbn, userId));
         verify(cacheService, never()).cache(eq(isbn), any());
-        verify(userBookService, never()).tieBookToUser(eq(userId), eq(bookDto.bookId()), anyString());
+        verify(userBookService, never()).tieBookToUser(eq(userId), eq(bookDto.bookId()));
     }
 
     @Test

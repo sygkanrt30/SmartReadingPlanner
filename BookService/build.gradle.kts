@@ -20,6 +20,7 @@ dependencies {
         exclude(group = "io.github.resilience4j", module = "resilience4j-rxjava2")
         exclude(group = "io.reactivex.rxjava3", module = "rxjava")
     }
+    implementation("org.yaml:snakeyaml:2.5")
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
     testImplementation("org.springframework.security:spring-security-test")

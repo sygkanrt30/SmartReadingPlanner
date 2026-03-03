@@ -69,7 +69,7 @@ google:
     api:
       key: ${GOOGLE_BOOK_API_KEY}
       url: https://www.googleapis.com/books/v1/volumes
-      book: items(id,volumeInfo(title,authors,publisher,publishedDate,description,industryIdentifiers,pageCount,categories,language,mainCategory,imageLinks/thumbnail,infoLink))
+      book: items(id,volumeInfo(title,authors,publisher,publishedDate,description,industryIdentifiers,pageCount,categories,languageCondition,mainCategory,imageLinks/thumbnail,infoLink))
     retry-name: externalService
 
 open-library:
@@ -78,7 +78,7 @@ open-library:
       url: https://openlibrary.org/search.json
       user-agent: BookApp/2.0 (books@example.com)
     editions-fields: "key,title,subtitle,publishers,publish_date,number_of_pages,isbn_13,isbn_10,lccn,oclc,
-    language,ebook_access,ia,cover_i,physical_format,by_statement,description"
+    languageCondition,ebook_access,ia,cover_i,physical_format,by_statement,description"
     retry-name: openlibraryRetry
 
 user-service:

@@ -17,8 +17,8 @@ public class UserSettingInternalController {
     private final UserSettingsService userSettingsService;
 
     @GetMapping("/lang")
-    public ResponseEntity<Language> getLanguage(@RequestHeader("X-User-ID") Long userId) {
+    public ResponseEntity<?> getLanguage(@RequestHeader("X-User-ID") Long userId) {
         Language lang = userSettingsService.getLangByUserId(userId);
-        return ResponseEntity.ok(lang);
+        return ResponseEntity.ok(lang.name());
     }
 }

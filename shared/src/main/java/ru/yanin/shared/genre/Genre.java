@@ -1,5 +1,7 @@
 package ru.yanin.shared.genre;
 
+import java.util.Objects;
+
 public enum Genre {
     FICTION,
     NON_FICTION,
@@ -40,10 +42,12 @@ public enum Genre {
     NO_GENRE;
 
 
-    public static Genre genreFrom(String value){
-        for (var genre : values()) {
-            if (genre.name().equalsIgnoreCase(value)) {
-                return genre;
+    public static Genre genreFrom(String value) {
+        if (Objects.nonNull(value)) {
+            for (var genre : values()) {
+                if (genre.name().equalsIgnoreCase(value)) {
+                    return genre;
+                }
             }
         }
         return NO_GENRE;

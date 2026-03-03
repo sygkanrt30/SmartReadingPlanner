@@ -5,6 +5,7 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiter;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.web.client.ResourceAccessException;
 import java.time.Duration;
 
 @Configuration
+@Slf4j
 public class ResilienceConfig {
 
     @Value("${google.books.retry-name}")
@@ -30,28 +32,34 @@ public class ResilienceConfig {
         var googleConfig = RetryConfig.custom()
                 .maxAttempts(3)
                 .waitDuration(Duration.ofSeconds(1))
-                .retryOnException(e ->
-                        e instanceof ResourceAccessException || e instanceof HttpStatusCodeException)
+                .retryOnException(this::logException)
                 .build();
 
         var openLibraryConfig = RetryConfig.custom()
                 .maxAttempts(2)
                 .waitDuration(Duration.ofMillis(500))
-                .retryOnException(e ->
-                        e instanceof ResourceAccessException || e instanceof HttpStatusCodeException)
+                .retryOnException(this::logException)
                 .build();
 
         var userServiceConfig = RetryConfig.custom()
                 .maxAttempts(2)
-                .waitDuration(Duration.ofMillis(300))
-                .retryOnException(e ->
-                        e instanceof ResourceAccessException || e instanceof HttpStatusCodeException)
+                .waitDuration(Duration.ofMillis(1000))
+                .retryOnException(this::logException)
                 .build();
 
         var registry = RetryRegistry.of(googleConfig);
         registry.addConfiguration(openLibraryRetryName, openLibraryConfig);
         registry.addConfiguration(userServiceRetryName, userServiceConfig);
         return registry;
+    }
+
+    private boolean logException(Throwable e) {
+        boolean shouldRetry = e instanceof ResourceAccessException ||
+                e instanceof HttpStatusCodeException;
+        if (shouldRetry) {
+            log.warn("Will retry after error: {}", e.getMessage());
+        }
+        return shouldRetry;
     }
 
     @Bean

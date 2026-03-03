@@ -78,6 +78,7 @@ logging:
     name: ${logging.file.path}/userService.log
   level:
     root: info
+    org.springframework.security: debug
   logback:
     rollingpolicy:
       max-file-size: 100MB

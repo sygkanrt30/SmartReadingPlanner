@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;
+import ru.yanin.practise.bookservice.model.dto.request.sort.SortRequest;
 import ru.yanin.practise.bookservice.service.book.user_book.UserBookService;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class UserBookController {
     private final UserBookService userBookService;
 
     @DeleteMapping
-    public ResponseEntity<?> removeFromUser(@RequestBody Long[] bookIds,
+    public ResponseEntity<?> removeFromUser(@RequestBody long[] bookIds,
                                             @RequestHeader("X-User-ID") Long userId) {
 
         if (Objects.isNull(bookIds) || bookIds.length == 0){
@@ -32,12 +32,12 @@ public class UserBookController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllImportsToUser(
+    public ResponseEntity<?> getAllBooksToUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int size,
             @RequestHeader("X-User-ID") Long userId) {
 
-        var dtos = userBookService.findAllWithPagination(userId, page, size);
+        var dtos = userBookService.findAll(userId, page, size);
         return getResponse(dtos);
     }
 
@@ -50,11 +50,11 @@ public class UserBookController {
     }
 
     @GetMapping("/all/sort")
-    public ResponseEntity<?> getAllImportsToUserWithSort(
-            @RequestBody SortAndPaginationRequest sortRequest,
+    public ResponseEntity<?> getAllBooksToUserWithSort(
+            @RequestBody SortRequest sortRequest,
             @RequestHeader("X-User-ID") Long userId) {
 
-        var dtos = userBookService.findAllWithPaginationAndSort(userId, sortRequest);
+        var dtos = userBookService.findAll(userId, sortRequest);
         return getResponse(dtos);
     }
 }

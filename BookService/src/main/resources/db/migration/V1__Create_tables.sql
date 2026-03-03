@@ -64,7 +64,6 @@ CREATE TABLE book_ratings (
 CREATE TABLE users_books (
     user_id BIGINT NOT NULL,
     book_id BIGINT NOT NULL,
-    isbn VARCHAR NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, book_id),
     CONSTRAINT fk_book

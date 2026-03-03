@@ -68,7 +68,7 @@ public class BookImportServiceImpl implements BookImportService {
             case true -> {
                 var book = optionalBook.get();
                 log.debug("Book with id {} found in storages", book.bookId());
-                userBookService.tieBookToUser(userId, book.bookId(), book.isbn());
+                userBookService.tieBookToUser(userId, book.bookId());
                 yield book;
             }
             case false -> importIfBookNotInStorages(identParam, userId, getBookFromApi);
@@ -84,7 +84,7 @@ public class BookImportServiceImpl implements BookImportService {
             throw new BookNotFoundInApiException("Book wasn't found by any of supported external book apis");
         }
         BookDto bookDto = bookService.save(dtoOptional.get());
-        userBookService.tieBookToUser(userId, bookDto.bookId(), bookDto.isbn());
+        userBookService.tieBookToUser(userId, bookDto.bookId());
         cacheService.cache(identParam, bookDto);
         log.debug("Book saved with id {} in db and in stores", bookDto.bookId());
         return bookDto;

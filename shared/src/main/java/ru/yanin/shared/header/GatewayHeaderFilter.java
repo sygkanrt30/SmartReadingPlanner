@@ -4,26 +4,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 import static ru.yanin.shared.header.HeaderName.PROCESSED;
 
 public class GatewayHeaderFilter extends OncePerRequestFilter {
-
-    private final List<RequestMatcher> skipPathMatchers;
-
-    public GatewayHeaderFilter() {
-        skipPathMatchers = List.of(
-                PathPatternRequestMatcher.withDefaults().matcher("/*/*internal*/**"),
-                PathPatternRequestMatcher.withDefaults().matcher("/*internal*/**"),
-                PathPatternRequestMatcher.withDefaults().matcher("/actuator/**")
-        );
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -31,7 +18,9 @@ public class GatewayHeaderFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        if (shouldSkip(request)) {
+        String uri = request.getRequestURI();
+
+        if (uri.contains("/internal/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,13 +33,5 @@ public class GatewayHeaderFilter extends OncePerRequestFilter {
             return;
         }
         filterChain.doFilter(request, response);
-    }
-
-    private boolean shouldSkip(HttpServletRequest request) {
-        for (RequestMatcher matcher : skipPathMatchers) {
-            if (matcher.matches(request))
-                return true;
-        }
-        return false;
     }
 }

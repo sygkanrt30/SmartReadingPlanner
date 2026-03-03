@@ -1,36 +1,49 @@
 package ru.yanin.practise.bookservice.repository.user_book;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.sort_request.SortAndPaginationRequest;
+import ru.yanin.practise.bookservice.model.dto.request.FilterAndSortRequest;
+import ru.yanin.practise.bookservice.model.dto.request.filter.FilterRequest;
+import ru.yanin.practise.bookservice.model.dto.request.sort.FieldNameToSortBy;
+import ru.yanin.practise.bookservice.model.dto.request.sort.SortRequest;
 import ru.yanin.practise.bookservice.repository.UserBookRepository;
+import ru.yanin.shared.genre.Genre;
 import ru.yanin.shared.language.Language;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
-@RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("SqlSourceToSinkFlow")
 public class UserBookRepositoryImpl implements UserBookRepository {
 
     private final SimpleJdbcInsert userBookJdbcInsert;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final RowMapper<BookDto> rowMapper;
+
+    public UserBookRepositoryImpl(SimpleJdbcInsert userBookJdbcInsert,
+                                  NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.userBookJdbcInsert = userBookJdbcInsert;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.rowMapper = new BookDtoRowMapper();
+    }
 
     @Override
-    public void tieBookToUser(Long userId, Long bookId, String isbn) {
+    public void tieBookToUser(Long userId, Long bookId) {
         try {
             userBookJdbcInsert.execute(Map.of(
                     "user_id", userId,
-                    "book_id", bookId,
-                    "isbn", isbn));
+                    "book_id", bookId
+            ));
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
@@ -47,7 +60,7 @@ public class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     @Override
-    public int deleteBooksFromUser(Long userId, Long... bookIds) throws DataAccessException {
+    public int deleteBooksFromUser(Long userId, long... bookIds) throws DataAccessException {
         var params = new MapSqlParameterSource()
                 .addValue("userId", userId)
                 .addValue("bookIds", bookIds);
@@ -57,14 +70,14 @@ public class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     @Override
-    public List<String> findAllISBNByUserIdWithPagination(Long userId, int page, int size) {
-        var params = getUserIdPaginationSqlParamSource(userId, page, size);
-        String query = SqlQueries.selectUserBooksWithPaginationQuery();
+    public List<BookDto> findAllByUserId(Long userId, int page, int size) {
+        var params = userIdPaginationSqlParamSource(userId, page, size);
+        String query = SortQueryBuilder.buildSortQuery(FieldNameToSortBy.DEFAULT, true, null);
         log.info(query);
-        return namedParameterJdbcTemplate.queryForList(query, params, String.class);
+        return namedParameterJdbcTemplate.query(query, params, rowMapper);
     }
 
-    private @NonNull MapSqlParameterSource getUserIdPaginationSqlParamSource(Long userId, int page, int size) {
+    private MapSqlParameterSource userIdPaginationSqlParamSource(Long userId, int page, int size) {
         int offset = page * size;
         return new MapSqlParameterSource()
                 .addValue("userId", userId)
@@ -73,11 +86,53 @@ public class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     @Override
-    public List<BookDto> findAllByUserIdWithPaginationAndSort(Long userId, Language lang,
-                                                              SortAndPaginationRequest sortRequest) {
-        String sql = SortQueryBuilder.buildSortQuery(sortRequest.fieldName(), sortRequest.isAscending(), lang);
-        var params = getUserIdPaginationSqlParamSource(userId, sortRequest.page(), sortRequest.size());
-        log.info(sql);
-        return namedParameterJdbcTemplate.queryForList(sql, params, BookDto.class);
+    public List<BookDto> findAllByUserId(Long userId, Language lang,
+                                         SortRequest sortRequest) {
+        String query = SortQueryBuilder.buildSortQuery(sortRequest.fieldName(), sortRequest.isAscending(), lang);
+        var params = userIdPaginationSqlParamSource(userId, sortRequest.page(), sortRequest.size());
+        log.info(query);
+        return namedParameterJdbcTemplate.query(query, params, rowMapper);
+    }
+
+    @Override
+    public List<BookDto> findAllByUserIdAndFavoriteGenres(Long userId, Set<Genre> genres, int page, int size) {
+        String query = SortQueryBuilder.buildByGenreSortQuery(FieldNameToSortBy.DEFAULT, true, null);
+        var params = userIdAndGenresPaginationSqlParamSource(userId, genres, page, size);
+        log.info(query);
+        return namedParameterJdbcTemplate.query(query, params, rowMapper);
+    }
+
+    private MapSqlParameterSource userIdAndGenresPaginationSqlParamSource(Long userId, Set<Genre> genres,
+                                                                                   int page, int size) {
+        return userIdPaginationSqlParamSource(userId, page, size)
+                .addValue("genres", genres.stream().map(Enum::name).collect(Collectors.toSet()));
+    }
+
+    @Override
+    public List<BookDto> findAllByUserIdAndFavoriteGenres(Long userId, Set<Genre> genres, Language lang,
+                                                          SortRequest sortRequest) {
+
+        String query = SortQueryBuilder.buildByGenreSortQuery(sortRequest.fieldName(), sortRequest.isAscending(), lang);
+        var params = userIdAndGenresPaginationSqlParamSource(userId, genres, sortRequest.page(), sortRequest.size());
+        log.info(query);
+        return namedParameterJdbcTemplate.query(query, params, rowMapper);
+    }
+
+    @Override
+    public List<BookDto> findAllWithFiltering(Long userId, FilterRequest filterRequest) {
+        String query = FilterQueryBuilder.buildQueryWithConditions(filterRequest);
+        var params = userIdPaginationSqlParamSource(userId, filterRequest.page(), filterRequest.size());
+        log.info(query);
+        return namedParameterJdbcTemplate.query(query, params, rowMapper);
+    }
+
+    @Override
+    public List<BookDto> findAllWithFiltering(Long userId, FilterAndSortRequest request, Language lang) {
+        var filterRequest = request.filterRequest();
+        String query = FilterQueryBuilder.buildQueryWithConditions(filterRequest);
+        query = SortQueryBuilder.buildSortQuery(query, request.fieldName(), request.isAscending(), lang);
+        var params = userIdPaginationSqlParamSource(userId, filterRequest.page(), filterRequest.size());
+        log.info(query);
+        return namedParameterJdbcTemplate.query(query, params, rowMapper);
     }
 }
