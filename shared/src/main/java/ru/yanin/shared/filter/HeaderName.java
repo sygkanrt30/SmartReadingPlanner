@@ -1,4 +1,4 @@
-package ru.yanin.shared.header;
+package ru.yanin.shared.filter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

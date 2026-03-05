@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import ru.yanin.shared.header.GatewayHeaderFilter;
+import ru.yanin.shared.filter.GatewayHeaderFilter;
 
 @Configuration
 public class SecurityConfig {

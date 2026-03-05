@@ -22,11 +22,10 @@ public class QueryReader {
     }
 
     private Map<String, String> loadQueries(String fullPath) {
-        var yaml = new Yaml();
         Map<String, Object> yamlData;
         try (var inputStream = getClass().getResourceAsStream(fullPath);
              var reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-            yamlData = yaml.load(reader);
+            yamlData = new Yaml().load(reader);
         } catch (IOException e) {
             throw new FailedLoadFileException("Failed to load queries from: " + fullPath, e);
         }
@@ -43,7 +42,7 @@ public class QueryReader {
         if (Objects.nonNull(yamlData) && yamlData.containsKey(QUERIES_KEY)) {
             Object queriesObj = yamlData.get(QUERIES_KEY);
             if (queriesObj instanceof Map<?, ?> queriesMap) {
-                for (Map.Entry<?, ?> entry : queriesMap.entrySet()) {
+                for (var entry : queriesMap.entrySet()) {
                     String key = entry.getKey().toString();
                     Object value = entry.getValue();
                     if (value instanceof String string) {
@@ -62,8 +61,8 @@ public class QueryReader {
     public String get(String queryName) {
         String query = queries.get(queryName);
         if (Objects.isNull(query)) {
-            throw new IllegalArgumentException("Query not found: " + queryName +
-                    ". Available queries: " + queries.keySet());
+            var errorMessage = String.format("Query not found: %s. Available queries: %s", queryName, queries.keySet());
+            throw new IllegalArgumentException(errorMessage);
         }
         return query;
     }

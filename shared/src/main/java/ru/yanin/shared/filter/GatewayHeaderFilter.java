@@ -1,4 +1,4 @@
-package ru.yanin.shared.header;
+package ru.yanin.shared.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,15 +8,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static ru.yanin.shared.header.HeaderName.PROCESSED;
+import static ru.yanin.shared.filter.HeaderName.PROCESSED;
 
 public class GatewayHeaderFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         String uri = request.getRequestURI();
 

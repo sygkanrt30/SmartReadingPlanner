@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-import static ru.yanin.shared.header.HeaderName.*;
+import static ru.yanin.shared.filter.HeaderName.*;
 
 @Component
 @Slf4j

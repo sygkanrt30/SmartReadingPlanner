@@ -20,7 +20,7 @@ import ru.yanin.practice.apigateway.ratelimit.util.RateLimitUtil;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 
-import static ru.yanin.shared.header.HeaderName.*;
+import static ru.yanin.shared.filter.HeaderName.*;
 
 @Component
 @RequiredArgsConstructor

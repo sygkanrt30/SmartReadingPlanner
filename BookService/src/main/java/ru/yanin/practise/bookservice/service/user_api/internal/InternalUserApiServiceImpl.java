@@ -8,7 +8,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.yanin.shared.genre.Genre;
-import ru.yanin.shared.header.HeaderName;
+import ru.yanin.shared.filter.HeaderName;
 import ru.yanin.shared.language.Language;
 
 import java.util.Collections;
