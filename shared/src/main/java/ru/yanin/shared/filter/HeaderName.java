@@ -17,8 +17,8 @@ public enum HeaderName {
     USER_ROLES("X-User-Roles"),
     USER_USERNAME("X-User-Username"),
 
-    RATE_LIMIT_POLICY("X-RateLimit-Policy");
-
+    RATE_LIMIT_POLICY("X-RateLimit-Policy"),
+    INTERNAL_CODE("X-Internal-Code");
 
     private final String value;
 }

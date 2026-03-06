@@ -2,13 +2,13 @@ package ru.yanin.practise.bookservice.service.user_api.internal;
 
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import ru.yanin.shared.genre.Genre;
 import ru.yanin.shared.filter.HeaderName;
+import ru.yanin.shared.genre.Genre;
 import ru.yanin.shared.language.Language;
 
 import java.util.Collections;
@@ -16,11 +16,16 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class InternalUserApiServiceImpl implements InternalUserApiService {
 
     private final RestClient userServiceApi;
+    private final String internalCode;
+
+    public InternalUserApiServiceImpl(RestClient userServiceApi, @Value("${internal.code}") String internalCode) {
+        this.userServiceApi = userServiceApi;
+        this.internalCode = internalCode;
+    }
 
     @Override
     @Retry(name = "${user-service.api.retry-name}", fallbackMethod = "langFallback")
@@ -30,6 +35,7 @@ public class InternalUserApiServiceImpl implements InternalUserApiService {
                 .uri(uriBuilder -> uriBuilder.path("/user-setting/lang")
                         .build())
                 .header(HeaderName.USER_ID.value(), String.valueOf(userId))
+                .header(HeaderName.INTERNAL_CODE.value(), internalCode)
                 .retrieve()
                 .body(String.class);
         return Language.valueOf(langSrt);
@@ -48,6 +54,7 @@ public class InternalUserApiServiceImpl implements InternalUserApiService {
                 .uri(uriBuilder -> uriBuilder.path("/reading-profile/genres")
                         .build())
                 .header(HeaderName.USER_ID.value(), String.valueOf(userId))
+                .header(HeaderName.INTERNAL_CODE.value(), internalCode)
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
     }

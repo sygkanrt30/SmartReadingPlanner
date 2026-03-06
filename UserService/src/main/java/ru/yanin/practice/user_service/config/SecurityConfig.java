@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import ru.yanin.shared.filter.GatewayHeaderFilter;
 import ru.yanin.practice.user_service.security.TokenCookieSessionAuthenticationStrategy;
 import ru.yanin.practice.user_service.service.token.util.TokenCookieJweStringSerializer;
+import ru.yanin.shared.filter.InternalRequestFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -24,13 +25,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            TokenCookieSessionAuthenticationStrategy tokenCookieSessionAuthenticationStrategy) throws Exception {
+            TokenCookieSessionAuthenticationStrategy tokenCookieSessionAuthenticationStrategy,
+            @Value("${internal.code}") String internalCode) throws Exception {
         return http
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .addFilterBefore(gatewayHeaderFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(internalRequestFilter(internalCode), GatewayHeaderFilter.class)
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().permitAll()
                 ).sessionManagement(sessionManagement -> sessionManagement
@@ -42,6 +45,11 @@ public class SecurityConfig {
     @Bean
     public GatewayHeaderFilter gatewayHeaderFilter() {
         return new GatewayHeaderFilter();
+    }
+
+    @Bean
+    public InternalRequestFilter internalRequestFilter(@Value("${internal.code}") String internalCode) {
+        return new InternalRequestFilter(internalCode);
     }
 
     @Bean

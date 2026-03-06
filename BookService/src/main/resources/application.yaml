@@ -99,6 +99,9 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     registryFetchIntervalSeconds: 1
 
+internal:
+  code: ${INTERNAL_CODE}
+
 
 logging:
   file:

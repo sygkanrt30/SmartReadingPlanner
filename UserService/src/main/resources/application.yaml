@@ -58,6 +58,9 @@ spring:
 jwt:
   cookie-token-key: ${JWT_COOKIE_TOKEN_KEY}
 
+internal:
+  code: ${INTERNAL_CODE}
+
 server:
   forward-headers-strategy: framework
   port: 8080
