@@ -15,8 +15,8 @@ class EmailVerificationController {
     @PostMapping("/send-verification")
     public ResponseEntity<?> sendCode(@RequestParam String email,
                                       @RequestHeader("X-User-ID") Long userId) {
-        
-        emailVerificationService.sendCode(email, userId);
+
+        emailVerificationService.generateAndSendCode(email, userId);
         return ResponseEntity.ok("Код отправлен на " + email);
     }
 
@@ -24,7 +24,11 @@ class EmailVerificationController {
     public ResponseEntity<?> verifyEmail(@RequestParam String email,
                                          @RequestParam String code) {
 
-        emailVerificationService.verifyEmail(email, code);
-        return ResponseEntity.ok("Email подтвержден!");
+        boolean isVerified = emailVerificationService.verifyEmail(email, code);
+        if (isVerified) {
+            return ResponseEntity.ok("Email подтвержден!");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid code");
+        }
     }
 }

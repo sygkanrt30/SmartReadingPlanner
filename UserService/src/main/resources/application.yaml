@@ -30,8 +30,15 @@ spring:
         shutdown-timeout: 100ms
       storage:
         email-code:
-          key:
-            expiration.sec: 60
+          expiration:
+            sec:
+              key: 180
+              block: 60
+        attempt:
+          limit: 3
+          expiration:
+            sec:
+              attempt-key: 200
   rabbitmq:
     host: localhost
     port: 5672

@@ -4,16 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import ru.yanin.practice.user_service.model.dto.rabbit.VerificationEvent;
-import ru.yanin.practice.user_service.service.email.verification.storage.CodeStorageService;
-import ru.yanin.shared.message_broker.producer.Producer;
+import ru.yanin.practice.user_service.service.email.verification.limiter.attempt.AttemptLimiter;
+import ru.yanin.practice.user_service.service.email.verification.storage.CodeStorage;
 import ru.yanin.practice.user_service.service.user.user_credentials.UserCredentialService;
+import ru.yanin.shared.message_broker.producer.Producer;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -24,10 +24,13 @@ class EmailVerificationServiceImplTest {
     private UserCredentialService userCredentialService;
 
     @Mock
-    private CodeStorageService codeStorageService;
+    private CodeStorage codeStorage;
 
     @Mock
     private Producer<VerificationEvent> producer;
+
+    @Mock
+    private AttemptLimiter attemptLimiter;
 
     @Captor
     private ArgumentCaptor<VerificationEvent> verificationEventCaptor;
@@ -36,7 +39,7 @@ class EmailVerificationServiceImplTest {
     private EmailVerificationServiceImpl emailVerificationService;
 
     @Test
-    void sendCode_ShouldSendEventToQueueAndSaveCodeInStorage_WhenEmailAndUserIdValid() {
+    void generateAndSendCode_ShouldSendEventToQueueAndSaveCodeInStorage_WhenEmailAndUserIdValid() {
         String code = "765754";
         String email = "test@test.com";
         Long userId = 11L;
@@ -45,23 +48,34 @@ class EmailVerificationServiceImplTest {
                 .thenReturn(true);
         codeGeneratorMockStatic.when(CodeGenerator::generateCode).thenReturn(code);
 
-        emailVerificationService.sendCode(email, userId);
+        emailVerificationService.generateAndSendCode(email, userId);
 
-        verify(codeStorageService).saveCode(eq(code), eq(email));
+        verify(codeStorage).saveCode(eq(code), eq(email));
         verify(producer).send(verificationEventCaptor.capture());
         assertEquals(code, verificationEventCaptor.getValue().code());
         codeGeneratorMockStatic.close();
     }
 
     @Test
-    void sendCode_ShouldThrowException_WhenEmailAndUserIdInvalid() {
+    void generateAndSendCode_ShouldThrowException_WhenEmailAndUserIdInvalid() {
         String email = "test@test.com";
         Long userId = 11L;
         when(userCredentialService.checkUserIdAndEmailBelongToSameUser(anyString(), anyLong()))
                 .thenReturn(false);
 
-        assertThrows(ResponseStatusException.class, () -> emailVerificationService.sendCode(email, userId));
-        verify(codeStorageService, never()).saveCode(anyString(), eq(email));
+        assertThrows(VerificationException.class, () -> emailVerificationService.generateAndSendCode(email, userId));
+        verify(codeStorage, never()).saveCode(anyString(), eq(email));
+        verify(producer, never()).send(any());
+    }
+
+    @Test
+    void generateAndSendCode_ShouldThrowException_WhenUserHasBlockToGenerateAndSendCode() {
+        String email = "test@test.com";
+        Long userId = 11L;
+        // isBlocked(email) return true
+
+        assertThrows(VerificationException.class, () -> emailVerificationService.generateAndSendCode(email, userId));
+        verify(codeStorage, never()).saveCode(anyString(), eq(email));
         verify(producer, never()).send(any());
     }
 
@@ -69,38 +83,53 @@ class EmailVerificationServiceImplTest {
     void verifyEmail_ShouldChangeEmailStatus_WhenCodeAndEmailValid() {
         String code = "765754";
         String email = "test@test.com";
-        when(codeStorageService.getCode(anyString())).thenReturn(Optional.of(code));
+        when(attemptLimiter.isAttemptAllowed(email)).thenReturn(true);
+        when(codeStorage.getCode(anyString())).thenReturn(Optional.of(code));
 
-        emailVerificationService.verifyEmail(email, code);
+        boolean result = emailVerificationService.verifyEmail(email, code);
 
-        verify(codeStorageService).deleteCode(eq(email));
+        assertTrue(result);
+        verify(codeStorage).deleteCode(eq(email));
         verify(userCredentialService).changeEmailVerificationStatus(eq(email));
     }
 
     @Test
-    void verifyEmail_ShouldThrowException_WhenEmailInvalid() {
+    void verifyEmail_ShouldReturnFalse_WhenEmailInvalid() {
         String code = "765754";
         String email = "test@test.com";
-        when(codeStorageService.getCode(email)).thenReturn(Optional.empty());
+        when(attemptLimiter.isAttemptAllowed(email)).thenReturn(true);
+        when(codeStorage.getCode(email)).thenReturn(Optional.empty());
 
-        var thrown = assertThrows(ResponseStatusException.class,
-                () -> emailVerificationService.verifyEmail(email, code));
+        boolean result = emailVerificationService.verifyEmail(email, code);
 
-        assertEquals("The code is out of date or not found", thrown.getReason());
-        verify(codeStorageService, never()).deleteCode(anyString());
+        assertFalse(result);
+        verify(attemptLimiter).registerFailedAttempt(email);
     }
 
     @Test
-    void verifyEmail_ShouldThrowException_WhenCodeInvalid() {
+    void verifyEmail_ShouldReturnFalse_WhenCodeInvalid() {
         String storedCode = "765754";
         String argCode = "765744";
         String email = "test@test.com";
-        when(codeStorageService.getCode(email)).thenReturn(Optional.of(storedCode));
+        when(attemptLimiter.isAttemptAllowed(email)).thenReturn(true);
+        when(codeStorage.getCode(email)).thenReturn(Optional.of(storedCode));
 
-        var thrown = assertThrows(ResponseStatusException.class,
-                () -> emailVerificationService.verifyEmail(email, argCode));
+        boolean result = emailVerificationService.verifyEmail(email, argCode);
 
-        assertEquals("Invalid code", thrown.getReason());
-        verify(codeStorageService, never()).deleteCode(anyString());
+        assertFalse(result);
+        verify(attemptLimiter).registerFailedAttempt(email);
+    }
+
+    @Test
+    void verifyEmail_ShouldThrowException_WhenAttemptIsNotAllowed() {
+        String code = "765754";
+        String email = "test@test.com";
+        when(attemptLimiter.isAttemptAllowed(email)).thenReturn(false);
+
+        var thrown = assertThrows(VerificationException.class,
+                () -> emailVerificationService.verifyEmail(email, code));
+
+        assertEquals("Attempt limit reached", thrown.getMessage());
+        assertEquals(HttpStatus.TOO_MANY_REQUESTS, thrown.responseStatus());
     }
 }
