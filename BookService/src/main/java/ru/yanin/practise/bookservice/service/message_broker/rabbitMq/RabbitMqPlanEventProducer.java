@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yanin.practise.bookservice.model.dto.ReadingPlanCalculationEvent;
+import ru.yanin.shared.event.ReadingPlanCalculationEvent;
 import ru.yanin.shared.message_broker.producer.Producer;
 
 @Service

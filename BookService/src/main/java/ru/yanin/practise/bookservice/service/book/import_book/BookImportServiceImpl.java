@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yanin.practise.bookservice.exception.BookNotFoundInApiException;
 import ru.yanin.practise.bookservice.model.dto.BookDto;
-import ru.yanin.practise.bookservice.model.dto.ReadingPlanCalculationEvent;
+import ru.yanin.shared.event.ReadingPlanCalculationEvent;
 import ru.yanin.practise.bookservice.model.entity.Book;
 import ru.yanin.practise.bookservice.model.mapper.BookMapper;
 import ru.yanin.practise.bookservice.model.mapper.ReadingPlanCalculationEventMapper;

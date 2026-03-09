@@ -46,6 +46,11 @@ spring:
               uri: lb://BookService
               predicates:
                 - Path=/api/v1/books/**
+                -
+            - id: planning-service
+              uri: lb://PlanningService
+              predicates:
+                - Path=/api/v1/plan/**
 server:
   port: 8086
   forward-headers-strategy: framework

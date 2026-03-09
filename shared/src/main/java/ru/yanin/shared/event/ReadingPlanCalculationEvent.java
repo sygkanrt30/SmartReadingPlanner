@@ -1,4 +1,4 @@
-package ru.yanin.practise.bookservice.model.dto;
+package ru.yanin.shared.event;
 
 import ru.yanin.shared.genre.Genre;
 
