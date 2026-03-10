@@ -6,7 +6,7 @@ queries:
     (
         SELECT JSON_AGG(
             JSON_BUILD_OBJECT(
-                      'fullName', a.full_name,
+                      'fullName', a.full_name
                     )
         )
         FROM book_authors ba
@@ -31,7 +31,7 @@ queries:
     (
         SELECT JSON_AGG(
             JSON_BUILD_OBJECT(
-                      'fullName', a.full_name,
+                      'fullName', a.full_name
                     )
         )
         FROM book_authors ba
@@ -54,7 +54,7 @@ queries:
     (
         SELECT JSON_AGG(
             JSON_BUILD_OBJECT(
-                      'fullName', a.full_name,
+                      'fullName', a.full_name
                     )
         )
         FROM book_authors ba
