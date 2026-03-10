@@ -1,0 +1,100 @@
+spring:
+  application:
+    name: UserService
+    base-url: /api/v1/users
+  datasource:
+    url: jdbc:postgresql://localhost:5436/main_db
+    username: postgres
+    password: 3030
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    locations: classpath:db/migration
+    encoding: UTF-8
+    validate-on-migrate: false
+    baseline-version: 1
+    baseline-on-migrate: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redispass123}
+      database: 2
+      timeout: 10s
+      connect-timeout: 10s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+        shutdown-timeout: 100ms
+      storage:
+        email-code:
+          expiration:
+            sec:
+              key: 180
+              block: 60
+        attempt:
+          limit: 3
+          expiration:
+            sec:
+              attempt-key: 200
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+    virtual-host: /
+    connection-timeout: 5000
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        multiplier: 2.0
+    queue:
+      name: verification.queue
+      message:
+        ttl: 70000
+      exchange:
+        name: verification.exchange
+      routing:
+        key: verification.routing.key
+
+
+jwt:
+  cookie-token-key: ${JWT_COOKIE_TOKEN_KEY}
+
+internal:
+  code: ${INTERNAL_CODE}
+
+server:
+  forward-headers-strategy: framework
+  port: 8080
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 1
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    registryFetchIntervalSeconds: 1
+
+
+logging:
+  file:
+    path: ./logs/userService
+    name: ${logging.file.path}/userService.log
+  level:
+    root: info
+    org.springframework.security: debug
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 10
+      total-size-cap: 5GB
+      file-name-pattern: ${logging.file.path}/archived/userService.%d{yyyy-MM-dd}.%i.log
+  pattern:
+    console: '%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %clr(%-5level) %logger{36} - %msg%n'
+    file: '%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n'
