@@ -1,0 +1,110 @@
+queries:
+  TEST1: >
+    SELECT b.id, b.isbn, b.title, b.pages, b.publisher, 
+           b.published_date, b.language, b.genre, b.description, 
+           b.average_rating, b.image_link, b.created_at, 
+    (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                      'fullName', a.full_name
+                    )
+        )
+        FROM book_authors ba
+        INNER JOIN authors a ON ba.author_id = a.id
+        WHERE ba.book_id = b.id
+    ) as authors
+    FROM users_books ub 
+    INNER JOIN books b ON ub.book_id = b.id 
+    WHERE ub.user_id = :userId
+    AND b.pages < 390
+    AND b.published_date = '2024-12-12'
+    AND b.average_rating <= 3.5
+    AND b.genre IN ('ADVENTURE', 'BIOGRAPHY')
+    AND b.language IN ('en')
+    ORDER BY %s %s 
+    LIMIT :limit OFFSET :offset;
+
+  TEST2: >
+    SELECT b.id, b.isbn, b.title, b.pages, b.publisher, 
+           b.published_date, b.language, b.genre, b.description, 
+           b.average_rating, b.image_link, b.created_at, 
+    (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                      'fullName', a.full_name
+                    )
+        )
+        FROM book_authors ba
+        INNER JOIN authors a ON ba.author_id = a.id
+        WHERE ba.book_id = b.id
+    ) as authors
+    FROM users_books ub 
+    INNER JOIN books b ON ub.book_id = b.id 
+    WHERE ub.user_id = :userId
+    AND b.pages <> 500
+    AND b.published_date < '2011-05-12'
+    AND b.language IN ('en')
+    ORDER BY %s %s 
+    LIMIT :limit OFFSET :offset;
+
+  TEST3: >
+    SELECT b.id, b.isbn, b.title, b.pages, b.publisher, 
+           b.published_date, b.language, b.genre, b.description, 
+           b.average_rating, b.image_link, b.created_at, 
+    (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                      'fullName', a.full_name
+                    )
+        )
+        FROM book_authors ba
+        INNER JOIN authors a ON ba.author_id = a.id
+        WHERE ba.book_id = b.id
+    ) as authors
+    FROM users_books ub 
+    INNER JOIN books b ON ub.book_id = b.id 
+    WHERE ub.user_id = :userId
+    ORDER BY %s %s 
+    LIMIT :limit OFFSET :offset;
+
+  TEST4: >
+    SELECT b.id, b.isbn, b.title, b.pages, b.publisher, 
+           b.published_date, b.language, b.genre, b.description, 
+           b.average_rating, b.image_link, b.created_at, 
+    (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                      'fullName', a.full_name
+                    )
+        )
+        FROM book_authors ba
+        INNER JOIN authors a ON ba.author_id = a.id
+        WHERE ba.book_id = b.id
+    ) as authors
+    FROM users_books ub 
+    INNER JOIN books b ON ub.book_id = b.id 
+    WHERE ub.user_id = :userId
+    AND b.pages < 390
+    AND b.pages >= 120
+    ORDER BY %s %s 
+    LIMIT :limit OFFSET :offset;
+
+  TEST5: >
+    SELECT b.id, b.isbn, b.title, b.pages, b.publisher, 
+           b.published_date, b.language, b.genre, b.description, 
+           b.average_rating, b.image_link, b.created_at, 
+    (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                      'fullName', a.full_name
+                    )
+        )
+        FROM book_authors ba
+        INNER JOIN authors a ON ba.author_id = a.id
+        WHERE ba.book_id = b.id
+    ) as authors
+    FROM users_books ub 
+    INNER JOIN books b ON ub.book_id = b.id 
+    WHERE ub.user_id = :userId
+    ORDER BY %s %s 
+    LIMIT :limit OFFSET :offset;

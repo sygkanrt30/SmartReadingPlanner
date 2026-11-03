@@ -8,6 +8,7 @@ build/
 ### IntelliJ IDEA ###
 .idea
 *.iws
+*.env
 *.iml
 *.ipr
 out/
@@ -20,3 +21,5 @@ out/
 
 ### Mac OS ###
 .DS_Store
+logs
+amplicode.xml
